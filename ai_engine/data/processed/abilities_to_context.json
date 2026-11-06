@@ -1,0 +1,723 @@
+{
+  "1.A.1.a.1": {
+    "name": "Oral Comprehension",
+    "contexts": [
+      {
+        "id": "4.C.1.a.2.c",
+        "name": "Public Speaking"
+      },
+      {
+        "id": "4.C.1.a.2.f",
+        "name": "Telephone Conversations"
+      },
+      {
+        "id": "4.C.1.a.2.l",
+        "name": "Face-to-Face Discussions with Individuals and Within Teams"
+      },
+      {
+        "id": "4.C.1.a.4",
+        "name": "Contact With Others"
+      },
+      {
+        "id": "4.C.1.b.1.e",
+        "name": "Work With or Contribute to a Work Group or Team"
+      },
+      {
+        "id": "4.C.1.b.1.f",
+        "name": "Deal With External Customers or the Public in General"
+      },
+      {
+        "id": "4.C.1.b.1.g",
+        "name": "Coordinate or Lead Others in Accomplishing Work Activities"
+      },
+      {
+        "id": "4.C.1.c.1",
+        "name": "Health and Safety of Other Workers"
+      },
+      {
+        "id": "4.C.1.c.2",
+        "name": "Work Outcomes and Results of Other Workers"
+      },
+      {
+        "id": "4.C.1.d.1",
+        "name": "Conflict Situations"
+      },
+      {
+        "id": "4.C.1.d.2",
+        "name": "Dealing With Unpleasant, Angry, or Discourteous People"
+      },
+      {
+        "id": "4.C.1.d.3",
+        "name": "Dealing with Violent or Physically Aggressive People"
+      }
+    ]
+  },
+  "1.A.1.a.2": {
+    "name": "Written Comprehension",
+    "contexts": [
+      {
+        "id": "4.C.1.a.2.h",
+        "name": "E-Mail"
+      },
+      {
+        "id": "4.C.1.a.2.j",
+        "name": "Written Letters and Memos"
+      }
+    ]
+  },
+  "1.A.1.a.3": {
+    "name": "Oral Expression",
+    "contexts": [
+      {
+        "id": "4.C.1.a.2.c",
+        "name": "Public Speaking"
+      },
+      {
+        "id": "4.C.1.a.2.f",
+        "name": "Telephone Conversations"
+      },
+      {
+        "id": "4.C.1.a.2.l",
+        "name": "Face-to-Face Discussions with Individuals and Within Teams"
+      },
+      {
+        "id": "4.C.1.a.4",
+        "name": "Contact With Others"
+      },
+      {
+        "id": "4.C.1.b.1.e",
+        "name": "Work With or Contribute to a Work Group or Team"
+      },
+      {
+        "id": "4.C.1.b.1.f",
+        "name": "Deal With External Customers or the Public in General"
+      },
+      {
+        "id": "4.C.1.b.1.g",
+        "name": "Coordinate or Lead Others in Accomplishing Work Activities"
+      },
+      {
+        "id": "4.C.1.c.1",
+        "name": "Health and Safety of Other Workers"
+      },
+      {
+        "id": "4.C.1.c.2",
+        "name": "Work Outcomes and Results of Other Workers"
+      },
+      {
+        "id": "4.C.1.d.1",
+        "name": "Conflict Situations"
+      },
+      {
+        "id": "4.C.1.d.2",
+        "name": "Dealing With Unpleasant, Angry, or Discourteous People"
+      },
+      {
+        "id": "4.C.1.d.3",
+        "name": "Dealing with Violent or Physically Aggressive People"
+      }
+    ]
+  },
+  "1.A.1.a.4": {
+    "name": "Written Expression",
+    "contexts": [
+      {
+        "id": "4.C.1.a.2.h",
+        "name": "E-Mail"
+      },
+      {
+        "id": "4.C.1.a.2.j",
+        "name": "Written Letters and Memos"
+      },
+      {
+        "id": "4.C.1.b.1.g",
+        "name": "Coordinate or Lead Others in Accomplishing Work Activities"
+      }
+    ]
+  },
+  "1.A.1.b.3": {
+    "name": "Problem Sensitivity",
+    "contexts": [
+      {
+        "id": "4.C.1.a.2.l",
+        "name": "Face-to-Face Discussions with Individuals and Within Teams"
+      },
+      {
+        "id": "4.C.1.b.1.e",
+        "name": "Work With or Contribute to a Work Group or Team"
+      },
+      {
+        "id": "4.C.1.b.1.f",
+        "name": "Deal With External Customers or the Public in General"
+      },
+      {
+        "id": "4.C.1.b.1.g",
+        "name": "Coordinate or Lead Others in Accomplishing Work Activities"
+      },
+      {
+        "id": "4.C.1.c.1",
+        "name": "Health and Safety of Other Workers"
+      },
+      {
+        "id": "4.C.1.c.2",
+        "name": "Work Outcomes and Results of Other Workers"
+      },
+      {
+        "id": "4.C.1.d.1",
+        "name": "Conflict Situations"
+      },
+      {
+        "id": "4.C.1.d.2",
+        "name": "Dealing With Unpleasant, Angry, or Discourteous People"
+      },
+      {
+        "id": "4.C.1.d.3",
+        "name": "Dealing with Violent or Physically Aggressive People"
+      },
+      {
+        "id": "4.C.3.a.1",
+        "name": "Consequence of Error"
+      },
+      {
+        "id": "4.C.3.a.2.a",
+        "name": "Impact of Decisions on Co-workers or Company Results"
+      },
+      {
+        "id": "4.C.3.a.4",
+        "name": "Freedom to Make Decisions"
+      },
+      {
+        "id": "4.C.3.b.8",
+        "name": "Determine Tasks, Priorities and Goals"
+      },
+      {
+        "id": "4.C.3.c.1",
+        "name": "Level of Competition"
+      }
+    ]
+  },
+  "1.A.1.b.4": {
+    "name": "Deductive Reasoning",
+    "contexts": [
+      {
+        "id": "4.C.1.b.1.f",
+        "name": "Deal With External Customers or the Public in General"
+      },
+      {
+        "id": "4.C.1.b.1.g",
+        "name": "Coordinate or Lead Others in Accomplishing Work Activities"
+      },
+      {
+        "id": "4.C.1.d.1",
+        "name": "Conflict Situations"
+      },
+      {
+        "id": "4.C.1.d.2",
+        "name": "Dealing With Unpleasant, Angry, or Discourteous People"
+      },
+      {
+        "id": "4.C.1.d.3",
+        "name": "Dealing with Violent or Physically Aggressive People"
+      },
+      {
+        "id": "4.C.3.a.2.a",
+        "name": "Impact of Decisions on Co-workers or Company Results"
+      },
+      {
+        "id": "4.C.3.a.4",
+        "name": "Freedom to Make Decisions"
+      },
+      {
+        "id": "4.C.3.b.8",
+        "name": "Determine Tasks, Priorities and Goals"
+      },
+      {
+        "id": "4.C.3.c.1",
+        "name": "Level of Competition"
+      }
+    ]
+  },
+  "1.A.1.b.5": {
+    "name": "Inductive Reasoning",
+    "contexts": [
+      {
+        "id": "4.C.1.b.1.f",
+        "name": "Deal With External Customers or the Public in General"
+      },
+      {
+        "id": "4.C.1.b.1.g",
+        "name": "Coordinate or Lead Others in Accomplishing Work Activities"
+      },
+      {
+        "id": "4.C.1.d.1",
+        "name": "Conflict Situations"
+      },
+      {
+        "id": "4.C.1.d.2",
+        "name": "Dealing With Unpleasant, Angry, or Discourteous People"
+      },
+      {
+        "id": "4.C.3.a.2.a",
+        "name": "Impact of Decisions on Co-workers or Company Results"
+      },
+      {
+        "id": "4.C.3.a.4",
+        "name": "Freedom to Make Decisions"
+      },
+      {
+        "id": "4.C.3.b.8",
+        "name": "Determine Tasks, Priorities and Goals"
+      },
+      {
+        "id": "4.C.3.c.1",
+        "name": "Level of Competition"
+      }
+    ]
+  },
+  "1.A.1.b.6": {
+    "name": "Information Ordering",
+    "contexts": [
+      {
+        "id": "4.C.1.b.1.g",
+        "name": "Coordinate or Lead Others in Accomplishing Work Activities"
+      }
+    ]
+  },
+  "1.A.1.b.7": {
+    "name": "Category Flexibility",
+    "contexts": [
+      {
+        "id": "4.C.1.b.1.g",
+        "name": "Coordinate or Lead Others in Accomplishing Work Activities"
+      }
+    ]
+  },
+  "1.A.1.g.1": {
+    "name": "Selective Attention",
+    "contexts": [
+      {
+        "id": "4.C.1.a.2.l",
+        "name": "Face-to-Face Discussions with Individuals and Within Teams"
+      },
+      {
+        "id": "4.C.2.b.1.a",
+        "name": "Exposed to Sounds, Noise Levels that are Distracting or Uncomfortable"
+      },
+      {
+        "id": "4.C.3.b.7",
+        "name": "Importance of Repeating Same Tasks"
+      },
+      {
+        "id": "4.C.3.d.3",
+        "name": "Pace Determined by Speed of Equipment"
+      }
+    ]
+  },
+  "1.A.1.g.2": {
+    "name": "Time Sharing",
+    "contexts": [
+      {
+        "id": "4.C.1.b.1.g",
+        "name": "Coordinate or Lead Others in Accomplishing Work Activities"
+      }
+    ]
+  },
+  "1.A.2.a.1": {
+    "name": "Arm-Hand Steadiness",
+    "contexts": [
+      {
+        "id": "4.C.2.d.1.g",
+        "name": "Spend Time Using Your Hands to Handle, Control, or Feel Objects, Tools, or Controls"
+      }
+    ]
+  },
+  "1.A.2.a.2": {
+    "name": "Manual Dexterity",
+    "contexts": [
+      {
+        "id": "4.C.1.d.3",
+        "name": "Dealing with Violent or Physically Aggressive People"
+      },
+      {
+        "id": "4.C.2.d.1.c",
+        "name": "Spend Time Climbing Ladders, Scaffolds, or Poles"
+      },
+      {
+        "id": "4.C.2.d.1.g",
+        "name": "Spend Time Using Your Hands to Handle, Control, or Feel Objects, Tools, or Controls"
+      }
+    ]
+  },
+  "1.A.2.a.3": {
+    "name": "Finger Dexterity",
+    "contexts": [
+      {
+        "id": "4.C.2.d.1.g",
+        "name": "Spend Time Using Your Hands to Handle, Control, or Feel Objects, Tools, or Controls"
+      }
+    ]
+  },
+  "1.A.2.b.1": {
+    "name": "Control Precision",
+    "contexts": [
+      {
+        "id": "4.C.2.d.1.g",
+        "name": "Spend Time Using Your Hands to Handle, Control, or Feel Objects, Tools, or Controls"
+      }
+    ]
+  },
+  "1.A.2.b.2": {
+    "name": "Multilimb Coordination",
+    "contexts": [
+      {
+        "id": "4.C.1.d.3",
+        "name": "Dealing with Violent or Physically Aggressive People"
+      }
+    ]
+  },
+  "1.A.2.b.3": {
+    "name": "Response Orientation",
+    "contexts": [
+      {
+        "id": "4.C.1.d.3",
+        "name": "Dealing with Violent or Physically Aggressive People"
+      }
+    ]
+  },
+  "1.A.2.b.4": {
+    "name": "Rate Control",
+    "contexts": [
+      {
+        "id": "4.C.3.d.3",
+        "name": "Pace Determined by Speed of Equipment"
+      }
+    ]
+  },
+  "1.A.2.c.1": {
+    "name": "Reaction Time",
+    "contexts": [
+      {
+        "id": "4.C.1.d.3",
+        "name": "Dealing with Violent or Physically Aggressive People"
+      },
+      {
+        "id": "4.C.2.c.1.e",
+        "name": "Exposed to Hazardous Equipment"
+      },
+      {
+        "id": "4.C.3.d.3",
+        "name": "Pace Determined by Speed of Equipment"
+      }
+    ]
+  },
+  "1.A.2.c.3": {
+    "name": "Speed of Limb Movement",
+    "contexts": [
+      {
+        "id": "4.C.1.d.3",
+        "name": "Dealing with Violent or Physically Aggressive People"
+      }
+    ]
+  },
+  "1.A.3.a.1": {
+    "name": "Static Strength",
+    "contexts": [
+      {
+        "id": "4.C.1.d.3",
+        "name": "Dealing with Violent or Physically Aggressive People"
+      }
+    ]
+  },
+  "1.A.3.a.2": {
+    "name": "Explosive Strength",
+    "contexts": [
+      {
+        "id": "4.C.1.d.3",
+        "name": "Dealing with Violent or Physically Aggressive People"
+      },
+      {
+        "id": "4.C.2.d.1.d",
+        "name": "Spend Time Walking or Running"
+      }
+    ]
+  },
+  "1.A.3.a.3": {
+    "name": "Dynamic Strength",
+    "contexts": [
+      {
+        "id": "4.C.1.d.3",
+        "name": "Dealing with Violent or Physically Aggressive People"
+      },
+      {
+        "id": "4.C.2.d.1.c",
+        "name": "Spend Time Climbing Ladders, Scaffolds, or Poles"
+      },
+      {
+        "id": "4.C.2.d.1.i",
+        "name": "Spend Time Making Repetitive Motions"
+      }
+    ]
+  },
+  "1.A.3.a.4": {
+    "name": "Trunk Strength",
+    "contexts": [
+      {
+        "id": "4.C.1.d.3",
+        "name": "Dealing with Violent or Physically Aggressive People"
+      },
+      {
+        "id": "4.C.2.b.1.f",
+        "name": "Exposed to Whole Body Vibration"
+      },
+      {
+        "id": "4.C.2.d.1.a",
+        "name": "Spend Time Sitting"
+      },
+      {
+        "id": "4.C.2.d.1.b",
+        "name": "Spend Time Standing"
+      },
+      {
+        "id": "4.C.2.d.1.c",
+        "name": "Spend Time Climbing Ladders, Scaffolds, or Poles"
+      },
+      {
+        "id": "4.C.2.d.1.d",
+        "name": "Spend Time Walking or Running"
+      },
+      {
+        "id": "4.C.2.d.1.e",
+        "name": "Spend Time Kneeling, Crouching, Stooping, or Crawling"
+      },
+      {
+        "id": "4.C.2.d.1.f",
+        "name": "Spend Time Keeping or Regaining Balance"
+      }
+    ]
+  },
+  "1.A.3.b.1": {
+    "name": "Stamina",
+    "contexts": [
+      {
+        "id": "4.C.1.d.3",
+        "name": "Dealing with Violent or Physically Aggressive People"
+      },
+      {
+        "id": "4.C.2.d.1.d",
+        "name": "Spend Time Walking or Running"
+      }
+    ]
+  },
+  "1.A.3.c.1": {
+    "name": "Extent Flexibility",
+    "contexts": [
+      {
+        "id": "4.C.1.d.3",
+        "name": "Dealing with Violent or Physically Aggressive People"
+      },
+      {
+        "id": "4.C.2.b.1.e",
+        "name": "Exposed to Cramped Work Space, Awkward Positions"
+      },
+      {
+        "id": "4.C.2.d.1.c",
+        "name": "Spend Time Climbing Ladders, Scaffolds, or Poles"
+      },
+      {
+        "id": "4.C.2.d.1.e",
+        "name": "Spend Time Kneeling, Crouching, Stooping, or Crawling"
+      },
+      {
+        "id": "4.C.2.d.1.h",
+        "name": "Spend Time Bending or Twisting Your Body"
+      }
+    ]
+  },
+  "1.A.3.c.3": {
+    "name": "Gross Body Coordination",
+    "contexts": [
+      {
+        "id": "4.C.1.d.3",
+        "name": "Dealing with Violent or Physically Aggressive People"
+      },
+      {
+        "id": "4.C.2.d.1.c",
+        "name": "Spend Time Climbing Ladders, Scaffolds, or Poles"
+      },
+      {
+        "id": "4.C.2.d.1.d",
+        "name": "Spend Time Walking or Running"
+      },
+      {
+        "id": "4.C.2.d.1.e",
+        "name": "Spend Time Kneeling, Crouching, Stooping, or Crawling"
+      }
+    ]
+  },
+  "1.A.3.c.4": {
+    "name": "Gross Body Equilibrium",
+    "contexts": [
+      {
+        "id": "4.C.1.d.3",
+        "name": "Dealing with Violent or Physically Aggressive People"
+      },
+      {
+        "id": "4.C.2.c.1.c",
+        "name": "Exposed to High Places"
+      },
+      {
+        "id": "4.C.2.d.1.c",
+        "name": "Spend Time Climbing Ladders, Scaffolds, or Poles"
+      },
+      {
+        "id": "4.C.2.d.1.d",
+        "name": "Spend Time Walking or Running"
+      },
+      {
+        "id": "4.C.2.d.1.e",
+        "name": "Spend Time Kneeling, Crouching, Stooping, or Crawling"
+      },
+      {
+        "id": "4.C.2.d.1.f",
+        "name": "Spend Time Keeping or Regaining Balance"
+      },
+      {
+        "id": "4.C.2.d.1.h",
+        "name": "Spend Time Bending or Twisting Your Body"
+      }
+    ]
+  },
+  "1.A.4.a.1": {
+    "name": "Near Vision",
+    "contexts": [
+      {
+        "id": "4.C.1.a.2.h",
+        "name": "E-Mail"
+      },
+      {
+        "id": "4.C.2.c.1.e",
+        "name": "Exposed to Hazardous Equipment"
+      }
+    ]
+  },
+  "1.A.4.a.7": {
+    "name": "Glare Sensitivity",
+    "contexts": [
+      {
+        "id": "4.C.2.b.1.c",
+        "name": "Exposed to Extremely Bright or Inadequate Lighting Conditions"
+      }
+    ]
+  },
+  "1.A.4.b.2": {
+    "name": "Auditory Attention",
+    "contexts": [
+      {
+        "id": "4.C.2.b.1.a",
+        "name": "Exposed to Sounds, Noise Levels that are Distracting or Uncomfortable"
+      }
+    ]
+  },
+  "1.A.4.b.4": {
+    "name": "Speech Recognition",
+    "contexts": [
+      {
+        "id": "4.C.1.a.2.f",
+        "name": "Telephone Conversations"
+      },
+      {
+        "id": "4.C.1.a.2.l",
+        "name": "Face-to-Face Discussions with Individuals and Within Teams"
+      },
+      {
+        "id": "4.C.1.a.4",
+        "name": "Contact With Others"
+      },
+      {
+        "id": "4.C.1.b.1.e",
+        "name": "Work With or Contribute to a Work Group or Team"
+      },
+      {
+        "id": "4.C.1.b.1.f",
+        "name": "Deal With External Customers or the Public in General"
+      },
+      {
+        "id": "4.C.1.b.1.g",
+        "name": "Coordinate or Lead Others in Accomplishing Work Activities"
+      },
+      {
+        "id": "4.C.1.c.1",
+        "name": "Health and Safety of Other Workers"
+      },
+      {
+        "id": "4.C.1.c.2",
+        "name": "Work Outcomes and Results of Other Workers"
+      },
+      {
+        "id": "4.C.1.d.1",
+        "name": "Conflict Situations"
+      },
+      {
+        "id": "4.C.1.d.2",
+        "name": "Dealing With Unpleasant, Angry, or Discourteous People"
+      },
+      {
+        "id": "4.C.1.d.3",
+        "name": "Dealing with Violent or Physically Aggressive People"
+      }
+    ]
+  },
+  "1.A.4.b.5": {
+    "name": "Speech Clarity",
+    "contexts": [
+      {
+        "id": "4.C.1.a.2.c",
+        "name": "Public Speaking"
+      },
+      {
+        "id": "4.C.1.a.2.f",
+        "name": "Telephone Conversations"
+      },
+      {
+        "id": "4.C.1.a.2.l",
+        "name": "Face-to-Face Discussions with Individuals and Within Teams"
+      },
+      {
+        "id": "4.C.1.a.4",
+        "name": "Contact With Others"
+      },
+      {
+        "id": "4.C.1.b.1.e",
+        "name": "Work With or Contribute to a Work Group or Team"
+      },
+      {
+        "id": "4.C.1.b.1.f",
+        "name": "Deal With External Customers or the Public in General"
+      },
+      {
+        "id": "4.C.1.b.1.g",
+        "name": "Coordinate or Lead Others in Accomplishing Work Activities"
+      },
+      {
+        "id": "4.C.1.c.1",
+        "name": "Health and Safety of Other Workers"
+      },
+      {
+        "id": "4.C.1.c.2",
+        "name": "Work Outcomes and Results of Other Workers"
+      },
+      {
+        "id": "4.C.1.d.1",
+        "name": "Conflict Situations"
+      },
+      {
+        "id": "4.C.1.d.2",
+        "name": "Dealing With Unpleasant, Angry, or Discourteous People"
+      },
+      {
+        "id": "4.C.1.d.3",
+        "name": "Dealing with Violent or Physically Aggressive People"
+      }
+    ]
+  }
+}

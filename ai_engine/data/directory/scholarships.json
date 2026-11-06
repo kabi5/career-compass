@@ -1,0 +1,79 @@
+[
+  {
+    "id": "nmds-loan-bursary",
+    "title": "NMDS student loan bursary",
+    "provider": "Government of Lesotho — National Manpower Development Secretariat",
+    "level": "Tertiary",
+    "eligibility": "For sponsored programmes and institutions announced by NMDS. Local applicants apply through the institution; regional/international applicants follow NMDS requirements. This is a loan bursary, subject to current award terms.",
+    "fields": [
+      "Sponsored programmes only"
+    ],
+    "opens_on": null,
+    "closes_on": null,
+    "documents": [
+      "Confirm the current route-specific checklist with NMDS.",
+      "Regional/international route: application evidence, academic records, identification and birth certificate; additional documents may apply."
+    ],
+    "official_url": "https://www.gov.ls/eservice/application-for-student-loan-bursaries/",
+    "source_url": "https://www.gov.ls/eservice/application-for-student-loan-bursaries/",
+    "source_document": "Government e-service: Application for student Loan Bursaries",
+    "publication_year": null,
+    "source_year": null,
+    "last_verified": "2026-10-27",
+    "verification_status": "verified",
+    "verified": true,
+    "application_status": "unknown",
+    "verification_scope": "Scheme and published process verified; current intake, award availability, deadlines and funding amount not established."
+  },
+  {
+    "id": "botho-aid-enquiry",
+    "title": "Botho University financial aid — enquiry",
+    "provider": "Botho University",
+    "level": "Confirm with provider",
+    "eligibility": "University FAQ lists need-based, sports, women-in-STEM and merit support for students who do not qualify for government sponsorship. Lesotho campus eligibility and current awards require direct confirmation.",
+    "fields": [
+      "Confirm with provider"
+    ],
+    "opens_on": null,
+    "closes_on": null,
+    "documents": [],
+    "official_url": "https://www.bothouniversity.com/faq",
+    "source_url": "https://www.bothouniversity.com/faq",
+    "source_document": "Botho University FAQ: fees and scholarships",
+    "publication_year": null,
+    "source_year": null,
+    "last_verified": "2026-10-27",
+    "verification_status": "verified",
+    "verified": true,
+    "application_status": "unknown",
+    "verification_scope": "Financial aid categories verified; this is an enquiry route, not an open scholarship call."
+  },
+  {
+    "id": "capernaum-lesotho",
+    "title": "Capernaum Scholarship — Lesotho school learners",
+    "provider": "Higherlife Foundation",
+    "level": "Secondary school (Form A–D)",
+    "eligibility": "The provider lists support for eligible Lesotho children in Form A–D. Confirm individual eligibility directly with the foundation.",
+    "fields": [
+      "School education"
+    ],
+    "opens_on": null,
+    "closes_on": null,
+    "documents": [
+      "Certified birth certificate",
+      "Parent/guardian death certificate where applicable; provider accepts specified alternative evidence",
+      "School invoice and banking information",
+      "Affidavit for missing documents where applicable"
+    ],
+    "official_url": "https://moshoeshoe1.higherlifefoundation.com/capernaum",
+    "source_url": "https://moshoeshoe1.higherlifefoundation.com/capernaum",
+    "source_document": "Higherlife Foundation Capernaum Scholarship page",
+    "publication_year": null,
+    "source_year": null,
+    "last_verified": "2026-10-27",
+    "verification_status": "verified",
+    "verified": true,
+    "application_status": "closed",
+    "verification_scope": "Provider page states applications closed at verification. No closing date was published; dates remain unknown."
+  }
+]

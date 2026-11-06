@@ -1,0 +1,113 @@
+{
+  "Realistic": {
+    "action": [
+      "build",
+      "drive",
+      "install",
+      "maintain",
+      "repair",
+      "work with hands"
+    ],
+    "object": [
+      "animals",
+      "electronics",
+      "equipment",
+      "machines",
+      "plants",
+      "real-world materials like wood",
+      "tools"
+    ]
+  },
+  "Investigative": {
+    "action": [
+      "analyze",
+      "diagnose",
+      "discover",
+      "problem solve",
+      "research",
+      "study",
+      "test",
+      "think"
+    ],
+    "object": [
+      "facts",
+      "ideas",
+      "knowledge",
+      "laboratory",
+      "science"
+    ]
+  },
+  "Artistic": {
+    "action": [
+      "compose",
+      "create",
+      "dance",
+      "design",
+      "perform",
+      "self-express",
+      "write"
+    ],
+    "object": [
+      "art",
+      "graphics",
+      "media",
+      "music",
+      "theatre"
+    ]
+  },
+  "Social": {
+    "action": [
+      "advise",
+      "educate",
+      "guide",
+      "help",
+      "nurture",
+      "teach"
+    ],
+    "object": [
+      "communication",
+      "health",
+      "people",
+      "service",
+      "social"
+    ]
+  },
+  "Enterprising": {
+    "action": [
+      "direct",
+      "lead",
+      "manage",
+      "market",
+      "negotiate",
+      "sell",
+      "supervise"
+    ],
+    "object": [
+      "business",
+      "customer",
+      "employee",
+      "law",
+      "politics",
+      "product"
+    ]
+  },
+  "Conventional": {
+    "action": [
+      "attention to detail",
+      "file",
+      "inspect",
+      "organize",
+      "record",
+      "sort"
+    ],
+    "object": [
+      "data",
+      "files",
+      "information",
+      "office",
+      "procedures",
+      "regulations",
+      "rules"
+    ]
+  }
+}

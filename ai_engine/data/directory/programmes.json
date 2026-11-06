@@ -1,0 +1,503 @@
+[
+  {
+    "id": "nul-cs-direct",
+    "institution_id": "nul",
+    "university": "National University of Lesotho",
+    "programme": "Bachelor of Science in Computer Science (Single Major)",
+    "level": "Degree",
+    "duration_years": 4,
+    "study_modes": [],
+    "required_subjects": [
+      "Mathematics",
+      "English",
+      "Biology or Physical Sciences or another recognised science"
+    ],
+    "entry_requirements": "Published subject minima include Mathematics B, English D and one recognised science C. The web page has inconsistent subject totals; confirm the complete current requirements and ranking with admissions.",
+    "related_careers": [
+      "software developer",
+      "computer programmer",
+      "database administrator",
+      "web developer",
+      "information security"
+    ],
+    "official_url": "https://nul.ls/course/bachelor-of-science-in-computer-science-single-major/",
+    "source_url": "https://nul.ls/course/bachelor-of-science-in-computer-science-single-major/",
+    "source_document": "Official programme listing (undated)",
+    "publication_year": null,
+    "source_year": null,
+    "last_verified": "2026-10-27",
+    "verification_status": "verified",
+    "verified": true,
+    "accreditation_status": "not_assessed",
+    "verification_scope": "Title, duration and named subject minima verified; complete subject-count/APS rules unresolved.",
+    "admission_rules": {
+      "grading_system": "LGCSE",
+      "complete": false,
+      "rules": [
+        {
+          "type": "subject",
+          "subject": "Mathematics",
+          "minimum_grade": "B"
+        },
+        {
+          "type": "subject",
+          "subject": "English",
+          "minimum_grade": "D"
+        },
+        {
+          "type": "any_subject",
+          "subjects": [
+            "Biology",
+            "Physical Sciences",
+            "Computer Science"
+          ],
+          "minimum_grade": "C",
+          "count": 1,
+          "exhaustive": false
+        }
+      ],
+      "notes": [
+        "Other recognised science subjects may be accepted by NUL.",
+        "Confirm total subject counts, APS and merit ranking with admissions."
+      ]
+    }
+  },
+  {
+    "id": "lp-computer-engineering",
+    "institution_id": "lerotholi",
+    "university": "Lerotholi Polytechnic",
+    "programme": "Bachelor of Engineering Technology in Computer Engineering",
+    "level": "Degree",
+    "duration_years": 5,
+    "study_modes": [],
+    "required_subjects": [
+      "Mathematics",
+      "Physical Sciences",
+      "English"
+    ],
+    "entry_requirements": "First-year academic prerequisites: Mathematics C, Physical Science C and English D; LQF Level 4 qualification or equivalent required. Sponsorship has separate requirements.",
+    "related_careers": [
+      "computer engineer",
+      "software developer",
+      "network",
+      "database administrator"
+    ],
+    "official_url": "https://www.lp.ac.ls/schools-and-programmes/set/",
+    "source_url": "https://www.lp.ac.ls/schools-and-programmes/set/",
+    "source_document": "Official programme listing (undated)",
+    "publication_year": null,
+    "source_year": null,
+    "last_verified": "2026-10-27",
+    "verification_status": "verified",
+    "verified": true,
+    "accreditation_status": "not_assessed",
+    "verification_scope": "Published first-year grade prerequisites and programme duration; qualification completion requires review.",
+    "admission_rules": {
+      "grading_system": "LGCSE",
+      "complete": false,
+      "rules": [
+        {
+          "type": "subject",
+          "subject": "Mathematics",
+          "minimum_grade": "C"
+        },
+        {
+          "type": "subject",
+          "subject": "Physical Sciences",
+          "minimum_grade": "C"
+        },
+        {
+          "type": "subject",
+          "subject": "English",
+          "minimum_grade": "D"
+        },
+        {
+          "type": "manual",
+          "description": "The institution must verify completed LQF Level 4 qualification/equivalence and current selection conditions."
+        }
+      ],
+      "notes": [
+        "Grade screening does not establish NMDS sponsorship eligibility."
+      ]
+    },
+    "duration_source_url": "https://www.lp.ac.ls/schools-and-programmes/"
+  },
+  {
+    "id": "lp-electronics-telecom",
+    "institution_id": "lerotholi",
+    "university": "Lerotholi Polytechnic",
+    "programme": "Bachelor of Engineering Technology in Electronics and Telecommunications Engineering",
+    "level": "Degree",
+    "duration_years": 5,
+    "study_modes": [],
+    "required_subjects": [],
+    "entry_requirements": "Current entry requirements require confirmation with the institution.",
+    "related_careers": [
+      "electrical engineer",
+      "electronics engineer",
+      "telecommunications"
+    ],
+    "official_url": "https://www.lp.ac.ls/schools-and-programmes/",
+    "source_url": "https://www.lp.ac.ls/schools-and-programmes/",
+    "source_document": "Official programme listing (undated)",
+    "publication_year": null,
+    "source_year": null,
+    "last_verified": "2026-10-27",
+    "verification_status": "verified",
+    "verified": true,
+    "accreditation_status": "not_assessed",
+    "verification_scope": "Programme identity only; see field notes and admission-rule completeness.",
+    "admission_rules": {
+      "grading_system": "LGCSE",
+      "complete": false,
+      "rules": [],
+      "notes": [
+        "No complete admission rules verified."
+      ]
+    }
+  },
+  {
+    "id": "lp-civil-diploma",
+    "institution_id": "lerotholi",
+    "university": "Lerotholi Polytechnic",
+    "programme": "Diploma in Civil Engineering",
+    "level": "Diploma",
+    "duration_years": 3,
+    "study_modes": [],
+    "required_subjects": [],
+    "entry_requirements": "Current entry requirements require confirmation with the institution.",
+    "related_careers": [
+      "civil engineer",
+      "civil engineering technologist",
+      "surveyor"
+    ],
+    "official_url": "https://www.lp.ac.ls/schools-and-programmes/",
+    "source_url": "https://www.lp.ac.ls/schools-and-programmes/",
+    "source_document": "Official programme listing (undated)",
+    "publication_year": null,
+    "source_year": null,
+    "last_verified": "2026-10-27",
+    "verification_status": "verified",
+    "verified": true,
+    "accreditation_status": "not_assessed",
+    "verification_scope": "Title and duration verified; entry requirements unavailable in this source.",
+    "admission_rules": {
+      "grading_system": "LGCSE",
+      "complete": false,
+      "rules": [],
+      "notes": [
+        "No complete admission rules verified."
+      ]
+    }
+  },
+  {
+    "id": "lp-bricklaying",
+    "institution_id": "lerotholi",
+    "university": "Lerotholi Polytechnic",
+    "programme": "Certificate in Bricklaying and Plastering",
+    "level": "Certificate",
+    "duration_years": 2,
+    "study_modes": [],
+    "required_subjects": [],
+    "entry_requirements": "Current entry requirements require confirmation with the institution.",
+    "related_careers": [
+      "brickmason",
+      "mason",
+      "construction"
+    ],
+    "official_url": "https://www.lp.ac.ls/schools-and-programmes/",
+    "source_url": "https://www.lp.ac.ls/schools-and-programmes/",
+    "source_document": "Official programme listing (undated)",
+    "publication_year": null,
+    "source_year": null,
+    "last_verified": "2026-10-27",
+    "verification_status": "verified",
+    "verified": true,
+    "accreditation_status": "not_assessed",
+    "verification_scope": "Craft title and duration verified; entry requirements unavailable in this source.",
+    "admission_rules": {
+      "grading_system": "LGCSE",
+      "complete": false,
+      "rules": [],
+      "notes": [
+        "No complete admission rules verified."
+      ]
+    }
+  },
+  {
+    "id": "botho-computing",
+    "institution_id": "botho",
+    "university": "Botho University Lesotho",
+    "programme": "Bachelor of Science in Computing",
+    "level": "Degree",
+    "duration_years": 4,
+    "study_modes": [],
+    "required_subjects": [],
+    "entry_requirements": "Current entry requirements require confirmation with the institution.",
+    "related_careers": [
+      "software developer",
+      "computer programmer",
+      "network",
+      "database administrator",
+      "web developer"
+    ],
+    "official_url": "https://www.bothouniversity.com/course/lesotho/BachelorofScienceinComputing",
+    "source_url": "https://www.bothouniversity.com/course/lesotho/BachelorofScienceinComputing",
+    "source_document": "Botho Lesotho programme web page",
+    "publication_year": null,
+    "source_year": null,
+    "last_verified": "2026-10-27",
+    "verification_status": "verified",
+    "verified": true,
+    "accreditation_status": "not_assessed",
+    "verification_scope": "Programme title, Lesotho campus and duration verified; numerical entry criteria await admissions confirmation.",
+    "admission_rules": {
+      "grading_system": "LGCSE",
+      "complete": false,
+      "rules": [],
+      "notes": [
+        "The current programme web page does not provide a complete machine-readable admission rule set. The indexed 2026 prospectus uses Credit/Pass terminology; thresholds were not inferred."
+      ]
+    }
+  },
+  {
+    "id": "lce-secondary-diploma",
+    "institution_id": "lce",
+    "university": "Lesotho College of Education",
+    "programme": "Diploma in Education (Secondary)",
+    "level": "Diploma",
+    "duration_years": null,
+    "study_modes": [],
+    "required_subjects": [],
+    "entry_requirements": "Current entry requirements require confirmation with the institution.",
+    "related_careers": [
+      "secondary school teacher",
+      "teacher",
+      "tutor"
+    ],
+    "official_url": "https://www.che.ac.ls/lesotho-college-of-education-profile/",
+    "source_url": "https://www.che.ac.ls/lesotho-college-of-education-profile/",
+    "source_document": "CHE institution profile: programmes recognised",
+    "publication_year": null,
+    "source_year": null,
+    "last_verified": "2026-10-27",
+    "verification_status": "verified",
+    "verified": true,
+    "accreditation_status": "not_assessed",
+    "verification_scope": "Listed in CHE profile; current intake, duration, requirements and accreditation term not established.",
+    "admission_rules": {
+      "grading_system": "LGCSE",
+      "complete": false,
+      "rules": [],
+      "notes": [
+        "No complete admission rules verified."
+      ]
+    }
+  },
+  {
+    "id": "lce-early-childhood",
+    "institution_id": "lce",
+    "university": "Lesotho College of Education",
+    "programme": "Certificate in Early Childhood Education",
+    "level": "Certificate",
+    "duration_years": null,
+    "study_modes": [],
+    "required_subjects": [],
+    "entry_requirements": "Current entry requirements require confirmation with the institution.",
+    "related_careers": [
+      "preschool teacher",
+      "childcare",
+      "kindergarten teacher"
+    ],
+    "official_url": "https://www.che.ac.ls/lesotho-college-of-education-profile/",
+    "source_url": "https://www.che.ac.ls/lesotho-college-of-education-profile/",
+    "source_document": "CHE institution profile: programmes recognised",
+    "publication_year": null,
+    "source_year": null,
+    "last_verified": "2026-10-27",
+    "verification_status": "verified",
+    "verified": true,
+    "accreditation_status": "not_assessed",
+    "verification_scope": "Listed in CHE profile; current intake, duration, requirements and accreditation term not established.",
+    "admission_rules": {
+      "grading_system": "LGCSE",
+      "complete": false,
+      "rules": [],
+      "notes": [
+        "No complete admission rules verified."
+      ]
+    }
+  },
+  {
+    "id": "limkokwing-it",
+    "institution_id": "limkokwing",
+    "university": "Limkokwing University of Creative Technology (Lesotho)",
+    "programme": "BSc (Hons) in Information Technology",
+    "level": "Degree",
+    "duration_years": null,
+    "study_modes": [],
+    "required_subjects": [],
+    "entry_requirements": "Current entry requirements require confirmation with the institution.",
+    "related_careers": [
+      "computer",
+      "network",
+      "information security",
+      "database"
+    ],
+    "official_url": "https://www.che.ac.ls/limkokwing-university-of-creative-technology-profile/",
+    "source_url": "https://www.che.ac.ls/limkokwing-university-of-creative-technology-profile/",
+    "source_document": "CHE institution profile: programmes recognised",
+    "publication_year": null,
+    "source_year": null,
+    "last_verified": "2026-10-27",
+    "verification_status": "verified",
+    "verified": true,
+    "accreditation_status": "not_assessed",
+    "verification_scope": "Listed in CHE profile; current intake, duration, requirements and accreditation term not established.",
+    "admission_rules": {
+      "grading_system": "LGCSE",
+      "complete": false,
+      "rules": [],
+      "notes": [
+        "No complete admission rules verified."
+      ]
+    }
+  },
+  {
+    "id": "limkokwing-graphic",
+    "institution_id": "limkokwing",
+    "university": "Limkokwing University of Creative Technology (Lesotho)",
+    "programme": "Associate Degree in Graphic Design",
+    "level": "Associate Degree",
+    "duration_years": null,
+    "study_modes": [],
+    "required_subjects": [],
+    "entry_requirements": "Current entry requirements require confirmation with the institution.",
+    "related_careers": [
+      "graphic designer",
+      "art director",
+      "web and digital interface"
+    ],
+    "official_url": "https://www.che.ac.ls/limkokwing-university-of-creative-technology-profile/",
+    "source_url": "https://www.che.ac.ls/limkokwing-university-of-creative-technology-profile/",
+    "source_document": "CHE institution profile: programmes recognised",
+    "publication_year": null,
+    "source_year": null,
+    "last_verified": "2026-10-27",
+    "verification_status": "verified",
+    "verified": true,
+    "accreditation_status": "not_assessed",
+    "verification_scope": "Listed in CHE profile; current intake, duration, requirements and accreditation term not established.",
+    "admission_rules": {
+      "grading_system": "LGCSE",
+      "complete": false,
+      "rules": [],
+      "notes": [
+        "No complete admission rules verified."
+      ]
+    }
+  },
+  {
+    "id": "lac-forestry",
+    "institution_id": "lac",
+    "university": "Lesotho Agricultural College",
+    "programme": "Diploma in Forestry and Resource Management",
+    "level": "Diploma",
+    "duration_years": null,
+    "study_modes": [],
+    "required_subjects": [],
+    "entry_requirements": "Current entry requirements require confirmation with the institution.",
+    "related_careers": [
+      "forester",
+      "conservation scientist",
+      "forest",
+      "environmental"
+    ],
+    "official_url": "https://www.che.ac.ls/lesotho-agricultural-college-profile/",
+    "source_url": "https://www.che.ac.ls/lesotho-agricultural-college-profile/",
+    "source_document": "CHE institution profile: programmes recognised",
+    "publication_year": null,
+    "source_year": null,
+    "last_verified": "2026-10-27",
+    "verification_status": "verified",
+    "verified": true,
+    "accreditation_status": "not_assessed",
+    "verification_scope": "Listed programme identity only. Current accreditation requires direct CHE confirmation.",
+    "admission_rules": {
+      "grading_system": "LGCSE",
+      "complete": false,
+      "rules": [],
+      "notes": [
+        "No complete admission rules verified."
+      ]
+    }
+  },
+  {
+    "id": "lac-agricultural-engineering",
+    "institution_id": "lac",
+    "university": "Lesotho Agricultural College",
+    "programme": "Diploma in Agricultural Engineering, Land and Water Management",
+    "level": "Diploma",
+    "duration_years": null,
+    "study_modes": [],
+    "required_subjects": [],
+    "entry_requirements": "Current entry requirements require confirmation with the institution.",
+    "related_careers": [
+      "agricultural engineer",
+      "water",
+      "agricultural technician"
+    ],
+    "official_url": "https://www.che.ac.ls/lesotho-agricultural-college-profile/",
+    "source_url": "https://www.che.ac.ls/lesotho-agricultural-college-profile/",
+    "source_document": "CHE institution profile: programmes recognised",
+    "publication_year": null,
+    "source_year": null,
+    "last_verified": "2026-10-27",
+    "verification_status": "verified",
+    "verified": true,
+    "accreditation_status": "not_assessed",
+    "verification_scope": "Listed programme identity only. Current accreditation requires direct CHE confirmation.",
+    "admission_rules": {
+      "grading_system": "LGCSE",
+      "complete": false,
+      "rules": [],
+      "notes": [
+        "No complete admission rules verified."
+      ]
+    }
+  },
+  {
+    "id": "cas-bafs",
+    "institution_id": "cas",
+    "university": "Centre for Accounting Studies",
+    "programme": "Bachelor of Arts in Financial Services",
+    "level": "Degree",
+    "duration_years": null,
+    "study_modes": [],
+    "required_subjects": [],
+    "entry_requirements": "Current entry requirements require confirmation with the institution.",
+    "related_careers": [
+      "financial",
+      "accountant",
+      "budget analyst"
+    ],
+    "official_url": "https://cas.ac.ls/programs/",
+    "source_url": "https://cas.ac.ls/programs/",
+    "source_document": "CAS programme catalogue; BAFS entry dated 23 April 2025",
+    "publication_year": 2025,
+    "source_year": 2025,
+    "last_verified": "2026-10-27",
+    "verification_status": "verified",
+    "verified": true,
+    "accreditation_status": "not_assessed",
+    "verification_scope": "Programme title verified; duration, current admission rules and accreditation not established.",
+    "admission_rules": {
+      "grading_system": "LGCSE",
+      "complete": false,
+      "rules": [],
+      "notes": [
+        "No complete admission rules verified."
+      ]
+    }
+  }
+]

@@ -1,0 +1,65 @@
+services:
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in .env}
+      MYSQL_DATABASE: career_guidance
+      MYSQL_USER: career_app
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+  ai:
+    build:
+      context: .
+      dockerfile: deploy/ai/Dockerfile
+    restart: unless-stopped
+    environment:
+      APP_ENV: production
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN:?Set INTERNAL_API_TOKEN in .env}
+      ENABLE_GEMINI: 'false'
+      RECOMMENDATION_WEIGHTS: ${RECOMMENDATION_WEIGHTS:-{}}
+    expose:
+      - '5001'
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen(urllib.request.Request('http://127.0.0.1:5001/health', headers={'X-Internal-Token':__import__('os').environ['INTERNAL_API_TOKEN']}), timeout=5)"]
+      interval: 30s
+      timeout: 8s
+      retries: 4
+  web:
+    build:
+      context: .
+      dockerfile: deploy/php/Dockerfile
+    restart: unless-stopped
+    environment:
+      DB_HOST: db
+      DB_PORT: '3306'
+      DB_NAME: career_guidance
+      DB_USER: career_app
+      DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      AI_API: http://ai:5001
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN:?Set INTERNAL_API_TOKEN in .env}
+      APP_ENV: production
+      APP_FORCE_HTTPS: ${APP_FORCE_HTTPS:-0}
+      APP_URL: ${APP_URL:-http://localhost:8080}
+      MAIL_ENABLED: ${MAIL_ENABLED:-0}
+      MAIL_FROM: ${MAIL_FROM:-}
+      REQUIRE_EMAIL_VERIFICATION: ${REQUIRE_EMAIL_VERIFICATION:-0}
+      COUNSELLING_RETENTION_DAYS: ${COUNSELLING_RETENTION_DAYS:-365}
+      AUDIT_RETENTION_DAYS: ${AUDIT_RETENTION_DAYS:-365}
+      SUPPORT_EMAIL: ${SUPPORT_EMAIL:-}
+    depends_on:
+      db:
+        condition: service_healthy
+      ai:
+        condition: service_healthy
+    ports:
+      - '127.0.0.1:${WEB_PORT:-8080}:80'
+volumes:
+  db_data:

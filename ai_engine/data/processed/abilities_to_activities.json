@@ -1,0 +1,1776 @@
+{
+  "1.A.1.a.1": {
+    "name": "Oral Comprehension",
+    "activities": [
+      {
+        "id": "4.A.1.a.1",
+        "name": "Getting Information"
+      },
+      {
+        "id": "4.A.1.a.2",
+        "name": "Monitoring Processes, Materials, or Surroundings"
+      },
+      {
+        "id": "4.A.1.b.1",
+        "name": "Identifying Objects, Actions, and Events"
+      },
+      {
+        "id": "4.A.2.a.1",
+        "name": "Judging the Qualities of Objects, Services, or People"
+      },
+      {
+        "id": "4.A.2.a.2",
+        "name": "Processing Information"
+      },
+      {
+        "id": "4.A.2.a.3",
+        "name": "Evaluating Information to Determine Compliance with Standards"
+      },
+      {
+        "id": "4.A.2.b.3",
+        "name": "Updating and Using Relevant Knowledge"
+      },
+      {
+        "id": "4.A.4.a.1",
+        "name": "Interpreting the Meaning of Information for Others"
+      },
+      {
+        "id": "4.A.4.a.2",
+        "name": "Communicating with Supervisors, Peers, or Subordinates"
+      },
+      {
+        "id": "4.A.4.a.3",
+        "name": "Communicating with People Outside the Organization"
+      },
+      {
+        "id": "4.A.4.a.4",
+        "name": "Establishing and Maintaining Interpersonal Relationships"
+      },
+      {
+        "id": "4.A.4.a.5",
+        "name": "Assisting and Caring for Others"
+      },
+      {
+        "id": "4.A.4.a.6",
+        "name": "Selling or Influencing Others"
+      },
+      {
+        "id": "4.A.4.a.7",
+        "name": "Resolving Conflicts and Negotiating with Others"
+      },
+      {
+        "id": "4.A.4.a.8",
+        "name": "Performing for or Working Directly with the Public"
+      },
+      {
+        "id": "4.A.4.b.1",
+        "name": "Coordinating the Work and Activities of Others"
+      },
+      {
+        "id": "4.A.4.b.2",
+        "name": "Developing and Building Teams"
+      },
+      {
+        "id": "4.A.4.b.3",
+        "name": "Training and Teaching Others"
+      },
+      {
+        "id": "4.A.4.b.4",
+        "name": "Guiding, Directing, and Motivating Subordinates"
+      },
+      {
+        "id": "4.A.4.b.5",
+        "name": "Coaching and Developing Others"
+      },
+      {
+        "id": "4.A.4.b.6",
+        "name": "Providing Consultation and Advice to Others"
+      },
+      {
+        "id": "4.A.4.c.2",
+        "name": "Staffing Organizational Units"
+      },
+      {
+        "id": "4.A.4.c.3",
+        "name": "Monitoring and Controlling Resources"
+      }
+    ]
+  },
+  "1.A.1.a.2": {
+    "name": "Written Comprehension",
+    "activities": [
+      {
+        "id": "4.A.1.a.1",
+        "name": "Getting Information"
+      },
+      {
+        "id": "4.A.1.a.2",
+        "name": "Monitoring Processes, Materials, or Surroundings"
+      },
+      {
+        "id": "4.A.1.b.1",
+        "name": "Identifying Objects, Actions, and Events"
+      },
+      {
+        "id": "4.A.2.a.1",
+        "name": "Judging the Qualities of Objects, Services, or People"
+      },
+      {
+        "id": "4.A.2.a.2",
+        "name": "Processing Information"
+      },
+      {
+        "id": "4.A.2.a.3",
+        "name": "Evaluating Information to Determine Compliance with Standards"
+      },
+      {
+        "id": "4.A.2.a.4",
+        "name": "Analyzing Data or Information"
+      },
+      {
+        "id": "4.A.2.b.1",
+        "name": "Making Decisions and Solving Problems"
+      },
+      {
+        "id": "4.A.2.b.3",
+        "name": "Updating and Using Relevant Knowledge"
+      },
+      {
+        "id": "4.A.3.b.1",
+        "name": "Working with Computers"
+      },
+      {
+        "id": "4.A.3.b.6",
+        "name": "Documenting/Recording Information"
+      },
+      {
+        "id": "4.A.4.a.1",
+        "name": "Interpreting the Meaning of Information for Others"
+      },
+      {
+        "id": "4.A.4.a.2",
+        "name": "Communicating with Supervisors, Peers, or Subordinates"
+      },
+      {
+        "id": "4.A.4.a.3",
+        "name": "Communicating with People Outside the Organization"
+      },
+      {
+        "id": "4.A.4.a.7",
+        "name": "Resolving Conflicts and Negotiating with Others"
+      },
+      {
+        "id": "4.A.4.b.3",
+        "name": "Training and Teaching Others"
+      },
+      {
+        "id": "4.A.4.b.4",
+        "name": "Guiding, Directing, and Motivating Subordinates"
+      },
+      {
+        "id": "4.A.4.b.6",
+        "name": "Providing Consultation and Advice to Others"
+      },
+      {
+        "id": "4.A.4.c.1",
+        "name": "Performing Administrative Activities"
+      },
+      {
+        "id": "4.A.4.c.2",
+        "name": "Staffing Organizational Units"
+      },
+      {
+        "id": "4.A.4.c.3",
+        "name": "Monitoring and Controlling Resources"
+      }
+    ]
+  },
+  "1.A.1.a.3": {
+    "name": "Oral Expression",
+    "activities": [
+      {
+        "id": "4.A.1.a.1",
+        "name": "Getting Information"
+      },
+      {
+        "id": "4.A.2.b.4",
+        "name": "Developing Objectives and Strategies"
+      },
+      {
+        "id": "4.A.3.b.2",
+        "name": "Drafting, Laying Out, and Specifying Technical Devices, Parts, and Equipment"
+      },
+      {
+        "id": "4.A.4.a.1",
+        "name": "Interpreting the Meaning of Information for Others"
+      },
+      {
+        "id": "4.A.4.a.2",
+        "name": "Communicating with Supervisors, Peers, or Subordinates"
+      },
+      {
+        "id": "4.A.4.a.3",
+        "name": "Communicating with People Outside the Organization"
+      },
+      {
+        "id": "4.A.4.a.4",
+        "name": "Establishing and Maintaining Interpersonal Relationships"
+      },
+      {
+        "id": "4.A.4.a.5",
+        "name": "Assisting and Caring for Others"
+      },
+      {
+        "id": "4.A.4.a.6",
+        "name": "Selling or Influencing Others"
+      },
+      {
+        "id": "4.A.4.a.7",
+        "name": "Resolving Conflicts and Negotiating with Others"
+      },
+      {
+        "id": "4.A.4.a.8",
+        "name": "Performing for or Working Directly with the Public"
+      },
+      {
+        "id": "4.A.4.b.1",
+        "name": "Coordinating the Work and Activities of Others"
+      },
+      {
+        "id": "4.A.4.b.2",
+        "name": "Developing and Building Teams"
+      },
+      {
+        "id": "4.A.4.b.3",
+        "name": "Training and Teaching Others"
+      },
+      {
+        "id": "4.A.4.b.4",
+        "name": "Guiding, Directing, and Motivating Subordinates"
+      },
+      {
+        "id": "4.A.4.b.5",
+        "name": "Coaching and Developing Others"
+      },
+      {
+        "id": "4.A.4.b.6",
+        "name": "Providing Consultation and Advice to Others"
+      },
+      {
+        "id": "4.A.4.c.2",
+        "name": "Staffing Organizational Units"
+      }
+    ]
+  },
+  "1.A.1.a.4": {
+    "name": "Written Expression",
+    "activities": [
+      {
+        "id": "4.A.2.b.4",
+        "name": "Developing Objectives and Strategies"
+      },
+      {
+        "id": "4.A.3.b.2",
+        "name": "Drafting, Laying Out, and Specifying Technical Devices, Parts, and Equipment"
+      },
+      {
+        "id": "4.A.3.b.6",
+        "name": "Documenting/Recording Information"
+      },
+      {
+        "id": "4.A.4.a.1",
+        "name": "Interpreting the Meaning of Information for Others"
+      },
+      {
+        "id": "4.A.4.a.2",
+        "name": "Communicating with Supervisors, Peers, or Subordinates"
+      },
+      {
+        "id": "4.A.4.a.3",
+        "name": "Communicating with People Outside the Organization"
+      },
+      {
+        "id": "4.A.4.a.6",
+        "name": "Selling or Influencing Others"
+      },
+      {
+        "id": "4.A.4.a.7",
+        "name": "Resolving Conflicts and Negotiating with Others"
+      },
+      {
+        "id": "4.A.4.b.1",
+        "name": "Coordinating the Work and Activities of Others"
+      },
+      {
+        "id": "4.A.4.b.2",
+        "name": "Developing and Building Teams"
+      },
+      {
+        "id": "4.A.4.b.3",
+        "name": "Training and Teaching Others"
+      },
+      {
+        "id": "4.A.4.b.4",
+        "name": "Guiding, Directing, and Motivating Subordinates"
+      },
+      {
+        "id": "4.A.4.b.6",
+        "name": "Providing Consultation and Advice to Others"
+      },
+      {
+        "id": "4.A.4.c.1",
+        "name": "Performing Administrative Activities"
+      },
+      {
+        "id": "4.A.4.c.2",
+        "name": "Staffing Organizational Units"
+      }
+    ]
+  },
+  "1.A.1.b.1": {
+    "name": "Fluency of Ideas",
+    "activities": [
+      {
+        "id": "4.A.2.b.1",
+        "name": "Making Decisions and Solving Problems"
+      },
+      {
+        "id": "4.A.2.b.2",
+        "name": "Thinking Creatively"
+      },
+      {
+        "id": "4.A.2.b.4",
+        "name": "Developing Objectives and Strategies"
+      },
+      {
+        "id": "4.A.4.a.6",
+        "name": "Selling or Influencing Others"
+      },
+      {
+        "id": "4.A.4.a.7",
+        "name": "Resolving Conflicts and Negotiating with Others"
+      },
+      {
+        "id": "4.A.4.b.1",
+        "name": "Coordinating the Work and Activities of Others"
+      },
+      {
+        "id": "4.A.4.b.2",
+        "name": "Developing and Building Teams"
+      },
+      {
+        "id": "4.A.4.b.3",
+        "name": "Training and Teaching Others"
+      },
+      {
+        "id": "4.A.4.b.4",
+        "name": "Guiding, Directing, and Motivating Subordinates"
+      },
+      {
+        "id": "4.A.4.b.5",
+        "name": "Coaching and Developing Others"
+      },
+      {
+        "id": "4.A.4.b.6",
+        "name": "Providing Consultation and Advice to Others"
+      }
+    ]
+  },
+  "1.A.1.b.2": {
+    "name": "Originality",
+    "activities": [
+      {
+        "id": "4.A.2.b.1",
+        "name": "Making Decisions and Solving Problems"
+      },
+      {
+        "id": "4.A.2.b.2",
+        "name": "Thinking Creatively"
+      },
+      {
+        "id": "4.A.2.b.4",
+        "name": "Developing Objectives and Strategies"
+      },
+      {
+        "id": "4.A.4.a.6",
+        "name": "Selling or Influencing Others"
+      },
+      {
+        "id": "4.A.4.a.7",
+        "name": "Resolving Conflicts and Negotiating with Others"
+      },
+      {
+        "id": "4.A.4.b.1",
+        "name": "Coordinating the Work and Activities of Others"
+      },
+      {
+        "id": "4.A.4.b.2",
+        "name": "Developing and Building Teams"
+      },
+      {
+        "id": "4.A.4.b.3",
+        "name": "Training and Teaching Others"
+      },
+      {
+        "id": "4.A.4.b.4",
+        "name": "Guiding, Directing, and Motivating Subordinates"
+      },
+      {
+        "id": "4.A.4.b.5",
+        "name": "Coaching and Developing Others"
+      },
+      {
+        "id": "4.A.4.b.6",
+        "name": "Providing Consultation and Advice to Others"
+      }
+    ]
+  },
+  "1.A.1.b.3": {
+    "name": "Problem Sensitivity",
+    "activities": [
+      {
+        "id": "4.A.1.a.2",
+        "name": "Monitoring Processes, Materials, or Surroundings"
+      },
+      {
+        "id": "4.A.1.b.1",
+        "name": "Identifying Objects, Actions, and Events"
+      },
+      {
+        "id": "4.A.1.b.2",
+        "name": "Inspecting Equipment, Structures, or Materials"
+      },
+      {
+        "id": "4.A.2.a.3",
+        "name": "Evaluating Information to Determine Compliance with Standards"
+      },
+      {
+        "id": "4.A.2.b.1",
+        "name": "Making Decisions and Solving Problems"
+      },
+      {
+        "id": "4.A.2.b.4",
+        "name": "Developing Objectives and Strategies"
+      },
+      {
+        "id": "4.A.2.b.5",
+        "name": "Scheduling Work and Activities"
+      },
+      {
+        "id": "4.A.2.b.6",
+        "name": "Organizing, Planning, and Prioritizing Work"
+      },
+      {
+        "id": "4.A.3.a.4",
+        "name": "Operating Vehicles, Mechanized Devices, or Equipment"
+      },
+      {
+        "id": "4.A.3.b.4",
+        "name": "Repairing and Maintaining Mechanical Equipment"
+      },
+      {
+        "id": "4.A.3.b.5",
+        "name": "Repairing and Maintaining Electronic Equipment"
+      },
+      {
+        "id": "4.A.4.a.4",
+        "name": "Establishing and Maintaining Interpersonal Relationships"
+      },
+      {
+        "id": "4.A.4.a.5",
+        "name": "Assisting and Caring for Others"
+      },
+      {
+        "id": "4.A.4.a.6",
+        "name": "Selling or Influencing Others"
+      },
+      {
+        "id": "4.A.4.a.7",
+        "name": "Resolving Conflicts and Negotiating with Others"
+      },
+      {
+        "id": "4.A.4.a.8",
+        "name": "Performing for or Working Directly with the Public"
+      },
+      {
+        "id": "4.A.4.b.1",
+        "name": "Coordinating the Work and Activities of Others"
+      },
+      {
+        "id": "4.A.4.b.2",
+        "name": "Developing and Building Teams"
+      },
+      {
+        "id": "4.A.4.b.3",
+        "name": "Training and Teaching Others"
+      },
+      {
+        "id": "4.A.4.b.4",
+        "name": "Guiding, Directing, and Motivating Subordinates"
+      },
+      {
+        "id": "4.A.4.b.5",
+        "name": "Coaching and Developing Others"
+      },
+      {
+        "id": "4.A.4.b.6",
+        "name": "Providing Consultation and Advice to Others"
+      },
+      {
+        "id": "4.A.4.c.2",
+        "name": "Staffing Organizational Units"
+      },
+      {
+        "id": "4.A.4.c.3",
+        "name": "Monitoring and Controlling Resources"
+      }
+    ]
+  },
+  "1.A.1.b.4": {
+    "name": "Deductive Reasoning",
+    "activities": [
+      {
+        "id": "4.A.1.a.2",
+        "name": "Monitoring Processes, Materials, or Surroundings"
+      },
+      {
+        "id": "4.A.1.b.1",
+        "name": "Identifying Objects, Actions, and Events"
+      },
+      {
+        "id": "4.A.1.b.2",
+        "name": "Inspecting Equipment, Structures, or Materials"
+      },
+      {
+        "id": "4.A.1.b.3",
+        "name": "Estimating the Quantifiable Characteristics of Products, Events, or Information"
+      },
+      {
+        "id": "4.A.2.a.1",
+        "name": "Judging the Qualities of Objects, Services, or People"
+      },
+      {
+        "id": "4.A.2.a.2",
+        "name": "Processing Information"
+      },
+      {
+        "id": "4.A.2.a.3",
+        "name": "Evaluating Information to Determine Compliance with Standards"
+      },
+      {
+        "id": "4.A.2.a.4",
+        "name": "Analyzing Data or Information"
+      },
+      {
+        "id": "4.A.2.b.1",
+        "name": "Making Decisions and Solving Problems"
+      },
+      {
+        "id": "4.A.2.b.3",
+        "name": "Updating and Using Relevant Knowledge"
+      },
+      {
+        "id": "4.A.2.b.4",
+        "name": "Developing Objectives and Strategies"
+      },
+      {
+        "id": "4.A.2.b.5",
+        "name": "Scheduling Work and Activities"
+      },
+      {
+        "id": "4.A.2.b.6",
+        "name": "Organizing, Planning, and Prioritizing Work"
+      },
+      {
+        "id": "4.A.3.b.1",
+        "name": "Working with Computers"
+      },
+      {
+        "id": "4.A.3.b.2",
+        "name": "Drafting, Laying Out, and Specifying Technical Devices, Parts, and Equipment"
+      },
+      {
+        "id": "4.A.3.b.4",
+        "name": "Repairing and Maintaining Mechanical Equipment"
+      },
+      {
+        "id": "4.A.3.b.5",
+        "name": "Repairing and Maintaining Electronic Equipment"
+      },
+      {
+        "id": "4.A.4.a.1",
+        "name": "Interpreting the Meaning of Information for Others"
+      },
+      {
+        "id": "4.A.4.a.5",
+        "name": "Assisting and Caring for Others"
+      },
+      {
+        "id": "4.A.4.a.6",
+        "name": "Selling or Influencing Others"
+      },
+      {
+        "id": "4.A.4.a.7",
+        "name": "Resolving Conflicts and Negotiating with Others"
+      },
+      {
+        "id": "4.A.4.a.8",
+        "name": "Performing for or Working Directly with the Public"
+      },
+      {
+        "id": "4.A.4.b.1",
+        "name": "Coordinating the Work and Activities of Others"
+      },
+      {
+        "id": "4.A.4.b.2",
+        "name": "Developing and Building Teams"
+      },
+      {
+        "id": "4.A.4.b.3",
+        "name": "Training and Teaching Others"
+      },
+      {
+        "id": "4.A.4.b.4",
+        "name": "Guiding, Directing, and Motivating Subordinates"
+      },
+      {
+        "id": "4.A.4.b.5",
+        "name": "Coaching and Developing Others"
+      },
+      {
+        "id": "4.A.4.b.6",
+        "name": "Providing Consultation and Advice to Others"
+      },
+      {
+        "id": "4.A.4.c.1",
+        "name": "Performing Administrative Activities"
+      },
+      {
+        "id": "4.A.4.c.2",
+        "name": "Staffing Organizational Units"
+      },
+      {
+        "id": "4.A.4.c.3",
+        "name": "Monitoring and Controlling Resources"
+      }
+    ]
+  },
+  "1.A.1.b.5": {
+    "name": "Inductive Reasoning",
+    "activities": [
+      {
+        "id": "4.A.1.a.1",
+        "name": "Getting Information"
+      },
+      {
+        "id": "4.A.1.a.2",
+        "name": "Monitoring Processes, Materials, or Surroundings"
+      },
+      {
+        "id": "4.A.1.b.1",
+        "name": "Identifying Objects, Actions, and Events"
+      },
+      {
+        "id": "4.A.1.b.2",
+        "name": "Inspecting Equipment, Structures, or Materials"
+      },
+      {
+        "id": "4.A.1.b.3",
+        "name": "Estimating the Quantifiable Characteristics of Products, Events, or Information"
+      },
+      {
+        "id": "4.A.2.a.1",
+        "name": "Judging the Qualities of Objects, Services, or People"
+      },
+      {
+        "id": "4.A.2.a.2",
+        "name": "Processing Information"
+      },
+      {
+        "id": "4.A.2.a.3",
+        "name": "Evaluating Information to Determine Compliance with Standards"
+      },
+      {
+        "id": "4.A.2.a.4",
+        "name": "Analyzing Data or Information"
+      },
+      {
+        "id": "4.A.2.b.1",
+        "name": "Making Decisions and Solving Problems"
+      },
+      {
+        "id": "4.A.2.b.2",
+        "name": "Thinking Creatively"
+      },
+      {
+        "id": "4.A.2.b.3",
+        "name": "Updating and Using Relevant Knowledge"
+      },
+      {
+        "id": "4.A.2.b.4",
+        "name": "Developing Objectives and Strategies"
+      },
+      {
+        "id": "4.A.2.b.6",
+        "name": "Organizing, Planning, and Prioritizing Work"
+      },
+      {
+        "id": "4.A.3.b.4",
+        "name": "Repairing and Maintaining Mechanical Equipment"
+      },
+      {
+        "id": "4.A.3.b.5",
+        "name": "Repairing and Maintaining Electronic Equipment"
+      },
+      {
+        "id": "4.A.4.a.1",
+        "name": "Interpreting the Meaning of Information for Others"
+      },
+      {
+        "id": "4.A.4.a.5",
+        "name": "Assisting and Caring for Others"
+      },
+      {
+        "id": "4.A.4.a.6",
+        "name": "Selling or Influencing Others"
+      },
+      {
+        "id": "4.A.4.a.7",
+        "name": "Resolving Conflicts and Negotiating with Others"
+      },
+      {
+        "id": "4.A.4.b.1",
+        "name": "Coordinating the Work and Activities of Others"
+      },
+      {
+        "id": "4.A.4.b.2",
+        "name": "Developing and Building Teams"
+      },
+      {
+        "id": "4.A.4.b.3",
+        "name": "Training and Teaching Others"
+      },
+      {
+        "id": "4.A.4.b.4",
+        "name": "Guiding, Directing, and Motivating Subordinates"
+      },
+      {
+        "id": "4.A.4.b.5",
+        "name": "Coaching and Developing Others"
+      },
+      {
+        "id": "4.A.4.b.6",
+        "name": "Providing Consultation and Advice to Others"
+      },
+      {
+        "id": "4.A.4.c.2",
+        "name": "Staffing Organizational Units"
+      }
+    ]
+  },
+  "1.A.1.b.6": {
+    "name": "Information Ordering",
+    "activities": [
+      {
+        "id": "4.A.1.a.2",
+        "name": "Monitoring Processes, Materials, or Surroundings"
+      },
+      {
+        "id": "4.A.1.b.1",
+        "name": "Identifying Objects, Actions, and Events"
+      },
+      {
+        "id": "4.A.1.b.3",
+        "name": "Estimating the Quantifiable Characteristics of Products, Events, or Information"
+      },
+      {
+        "id": "4.A.2.a.2",
+        "name": "Processing Information"
+      },
+      {
+        "id": "4.A.2.a.3",
+        "name": "Evaluating Information to Determine Compliance with Standards"
+      },
+      {
+        "id": "4.A.2.a.4",
+        "name": "Analyzing Data or Information"
+      },
+      {
+        "id": "4.A.2.b.1",
+        "name": "Making Decisions and Solving Problems"
+      },
+      {
+        "id": "4.A.2.b.5",
+        "name": "Scheduling Work and Activities"
+      },
+      {
+        "id": "4.A.2.b.6",
+        "name": "Organizing, Planning, and Prioritizing Work"
+      },
+      {
+        "id": "4.A.3.b.1",
+        "name": "Working with Computers"
+      },
+      {
+        "id": "4.A.3.b.2",
+        "name": "Drafting, Laying Out, and Specifying Technical Devices, Parts, and Equipment"
+      },
+      {
+        "id": "4.A.3.b.4",
+        "name": "Repairing and Maintaining Mechanical Equipment"
+      },
+      {
+        "id": "4.A.3.b.5",
+        "name": "Repairing and Maintaining Electronic Equipment"
+      },
+      {
+        "id": "4.A.3.b.6",
+        "name": "Documenting/Recording Information"
+      },
+      {
+        "id": "4.A.4.a.1",
+        "name": "Interpreting the Meaning of Information for Others"
+      },
+      {
+        "id": "4.A.4.a.2",
+        "name": "Communicating with Supervisors, Peers, or Subordinates"
+      },
+      {
+        "id": "4.A.4.a.3",
+        "name": "Communicating with People Outside the Organization"
+      },
+      {
+        "id": "4.A.4.a.7",
+        "name": "Resolving Conflicts and Negotiating with Others"
+      },
+      {
+        "id": "4.A.4.b.1",
+        "name": "Coordinating the Work and Activities of Others"
+      },
+      {
+        "id": "4.A.4.b.3",
+        "name": "Training and Teaching Others"
+      },
+      {
+        "id": "4.A.4.b.6",
+        "name": "Providing Consultation and Advice to Others"
+      },
+      {
+        "id": "4.A.4.c.1",
+        "name": "Performing Administrative Activities"
+      },
+      {
+        "id": "4.A.4.c.2",
+        "name": "Staffing Organizational Units"
+      },
+      {
+        "id": "4.A.4.c.3",
+        "name": "Monitoring and Controlling Resources"
+      }
+    ]
+  },
+  "1.A.1.b.7": {
+    "name": "Category Flexibility",
+    "activities": [
+      {
+        "id": "4.A.1.a.2",
+        "name": "Monitoring Processes, Materials, or Surroundings"
+      },
+      {
+        "id": "4.A.1.b.1",
+        "name": "Identifying Objects, Actions, and Events"
+      },
+      {
+        "id": "4.A.1.b.2",
+        "name": "Inspecting Equipment, Structures, or Materials"
+      },
+      {
+        "id": "4.A.2.a.1",
+        "name": "Judging the Qualities of Objects, Services, or People"
+      },
+      {
+        "id": "4.A.2.a.2",
+        "name": "Processing Information"
+      },
+      {
+        "id": "4.A.2.a.4",
+        "name": "Analyzing Data or Information"
+      },
+      {
+        "id": "4.A.2.b.1",
+        "name": "Making Decisions and Solving Problems"
+      },
+      {
+        "id": "4.A.2.b.2",
+        "name": "Thinking Creatively"
+      },
+      {
+        "id": "4.A.2.b.4",
+        "name": "Developing Objectives and Strategies"
+      },
+      {
+        "id": "4.A.2.b.5",
+        "name": "Scheduling Work and Activities"
+      },
+      {
+        "id": "4.A.2.b.6",
+        "name": "Organizing, Planning, and Prioritizing Work"
+      },
+      {
+        "id": "4.A.3.b.6",
+        "name": "Documenting/Recording Information"
+      },
+      {
+        "id": "4.A.4.a.1",
+        "name": "Interpreting the Meaning of Information for Others"
+      },
+      {
+        "id": "4.A.4.a.7",
+        "name": "Resolving Conflicts and Negotiating with Others"
+      },
+      {
+        "id": "4.A.4.b.1",
+        "name": "Coordinating the Work and Activities of Others"
+      },
+      {
+        "id": "4.A.4.b.3",
+        "name": "Training and Teaching Others"
+      },
+      {
+        "id": "4.A.4.b.6",
+        "name": "Providing Consultation and Advice to Others"
+      },
+      {
+        "id": "4.A.4.c.1",
+        "name": "Performing Administrative Activities"
+      },
+      {
+        "id": "4.A.4.c.2",
+        "name": "Staffing Organizational Units"
+      }
+    ]
+  },
+  "1.A.1.c.1": {
+    "name": "Mathematical Reasoning",
+    "activities": [
+      {
+        "id": "4.A.1.b.3",
+        "name": "Estimating the Quantifiable Characteristics of Products, Events, or Information"
+      },
+      {
+        "id": "4.A.2.a.2",
+        "name": "Processing Information"
+      }
+    ]
+  },
+  "1.A.1.c.2": {
+    "name": "Number Facility",
+    "activities": [
+      {
+        "id": "4.A.1.b.3",
+        "name": "Estimating the Quantifiable Characteristics of Products, Events, or Information"
+      },
+      {
+        "id": "4.A.2.a.2",
+        "name": "Processing Information"
+      },
+      {
+        "id": "4.A.4.c.3",
+        "name": "Monitoring and Controlling Resources"
+      }
+    ]
+  },
+  "1.A.1.d.1": {
+    "name": "Memorization",
+    "activities": [
+      {
+        "id": "4.A.3.b.4",
+        "name": "Repairing and Maintaining Mechanical Equipment"
+      },
+      {
+        "id": "4.A.3.b.5",
+        "name": "Repairing and Maintaining Electronic Equipment"
+      },
+      {
+        "id": "4.A.4.a.8",
+        "name": "Performing for or Working Directly with the Public"
+      },
+      {
+        "id": "4.A.4.b.3",
+        "name": "Training and Teaching Others"
+      }
+    ]
+  },
+  "1.A.1.e.1": {
+    "name": "Speed of Closure",
+    "activities": [
+      {
+        "id": "4.A.1.b.1",
+        "name": "Identifying Objects, Actions, and Events"
+      },
+      {
+        "id": "4.A.4.a.6",
+        "name": "Selling or Influencing Others"
+      },
+      {
+        "id": "4.A.4.a.7",
+        "name": "Resolving Conflicts and Negotiating with Others"
+      }
+    ]
+  },
+  "1.A.1.e.2": {
+    "name": "Flexibility of Closure",
+    "activities": [
+      {
+        "id": "4.A.1.a.1",
+        "name": "Getting Information"
+      },
+      {
+        "id": "4.A.1.a.2",
+        "name": "Monitoring Processes, Materials, or Surroundings"
+      },
+      {
+        "id": "4.A.1.b.1",
+        "name": "Identifying Objects, Actions, and Events"
+      },
+      {
+        "id": "4.A.1.b.2",
+        "name": "Inspecting Equipment, Structures, or Materials"
+      },
+      {
+        "id": "4.A.1.b.3",
+        "name": "Estimating the Quantifiable Characteristics of Products, Events, or Information"
+      },
+      {
+        "id": "4.A.2.a.2",
+        "name": "Processing Information"
+      },
+      {
+        "id": "4.A.2.b.1",
+        "name": "Making Decisions and Solving Problems"
+      }
+    ]
+  },
+  "1.A.1.e.3": {
+    "name": "Perceptual Speed",
+    "activities": [
+      {
+        "id": "4.A.1.a.2",
+        "name": "Monitoring Processes, Materials, or Surroundings"
+      },
+      {
+        "id": "4.A.1.b.1",
+        "name": "Identifying Objects, Actions, and Events"
+      },
+      {
+        "id": "4.A.1.b.2",
+        "name": "Inspecting Equipment, Structures, or Materials"
+      },
+      {
+        "id": "4.A.2.a.2",
+        "name": "Processing Information"
+      },
+      {
+        "id": "4.A.3.a.4",
+        "name": "Operating Vehicles, Mechanized Devices, or Equipment"
+      },
+      {
+        "id": "4.A.3.b.4",
+        "name": "Repairing and Maintaining Mechanical Equipment"
+      },
+      {
+        "id": "4.A.3.b.5",
+        "name": "Repairing and Maintaining Electronic Equipment"
+      }
+    ]
+  },
+  "1.A.1.f.1": {
+    "name": "Spatial Orientation",
+    "activities": [
+      {
+        "id": "4.A.3.a.4",
+        "name": "Operating Vehicles, Mechanized Devices, or Equipment"
+      }
+    ]
+  },
+  "1.A.1.f.2": {
+    "name": "Visualization",
+    "activities": [
+      {
+        "id": "4.A.1.b.1",
+        "name": "Identifying Objects, Actions, and Events"
+      },
+      {
+        "id": "4.A.1.b.2",
+        "name": "Inspecting Equipment, Structures, or Materials"
+      },
+      {
+        "id": "4.A.1.b.3",
+        "name": "Estimating the Quantifiable Characteristics of Products, Events, or Information"
+      },
+      {
+        "id": "4.A.2.b.2",
+        "name": "Thinking Creatively"
+      },
+      {
+        "id": "4.A.3.a.4",
+        "name": "Operating Vehicles, Mechanized Devices, or Equipment"
+      },
+      {
+        "id": "4.A.3.b.2",
+        "name": "Drafting, Laying Out, and Specifying Technical Devices, Parts, and Equipment"
+      },
+      {
+        "id": "4.A.3.b.4",
+        "name": "Repairing and Maintaining Mechanical Equipment"
+      },
+      {
+        "id": "4.A.3.b.5",
+        "name": "Repairing and Maintaining Electronic Equipment"
+      }
+    ]
+  },
+  "1.A.1.g.1": {
+    "name": "Selective Attention",
+    "activities": [
+      {
+        "id": "4.A.1.a.1",
+        "name": "Getting Information"
+      },
+      {
+        "id": "4.A.1.a.2",
+        "name": "Monitoring Processes, Materials, or Surroundings"
+      },
+      {
+        "id": "4.A.2.a.4",
+        "name": "Analyzing Data or Information"
+      },
+      {
+        "id": "4.A.2.b.1",
+        "name": "Making Decisions and Solving Problems"
+      },
+      {
+        "id": "4.A.2.b.2",
+        "name": "Thinking Creatively"
+      },
+      {
+        "id": "4.A.3.b.1",
+        "name": "Working with Computers"
+      },
+      {
+        "id": "4.A.3.b.6",
+        "name": "Documenting/Recording Information"
+      },
+      {
+        "id": "4.A.4.a.8",
+        "name": "Performing for or Working Directly with the Public"
+      },
+      {
+        "id": "4.A.4.b.3",
+        "name": "Training and Teaching Others"
+      }
+    ]
+  },
+  "1.A.1.g.2": {
+    "name": "Time Sharing",
+    "activities": [
+      {
+        "id": "4.A.1.a.2",
+        "name": "Monitoring Processes, Materials, or Surroundings"
+      },
+      {
+        "id": "4.A.3.a.4",
+        "name": "Operating Vehicles, Mechanized Devices, or Equipment"
+      },
+      {
+        "id": "4.A.4.a.8",
+        "name": "Performing for or Working Directly with the Public"
+      }
+    ]
+  },
+  "1.A.2.a.1": {
+    "name": "Arm-Hand Steadiness",
+    "activities": [
+      {
+        "id": "4.A.3.a.2",
+        "name": "Handling and Moving Objects"
+      },
+      {
+        "id": "4.A.3.a.3",
+        "name": "Controlling Machines and Processes"
+      },
+      {
+        "id": "4.A.3.a.4",
+        "name": "Operating Vehicles, Mechanized Devices, or Equipment"
+      },
+      {
+        "id": "4.A.3.b.4",
+        "name": "Repairing and Maintaining Mechanical Equipment"
+      },
+      {
+        "id": "4.A.3.b.5",
+        "name": "Repairing and Maintaining Electronic Equipment"
+      }
+    ]
+  },
+  "1.A.2.a.2": {
+    "name": "Manual Dexterity",
+    "activities": [
+      {
+        "id": "4.A.3.a.2",
+        "name": "Handling and Moving Objects"
+      },
+      {
+        "id": "4.A.3.b.4",
+        "name": "Repairing and Maintaining Mechanical Equipment"
+      },
+      {
+        "id": "4.A.3.b.5",
+        "name": "Repairing and Maintaining Electronic Equipment"
+      }
+    ]
+  },
+  "1.A.2.a.3": {
+    "name": "Finger Dexterity",
+    "activities": [
+      {
+        "id": "4.A.3.a.2",
+        "name": "Handling and Moving Objects"
+      },
+      {
+        "id": "4.A.3.b.4",
+        "name": "Repairing and Maintaining Mechanical Equipment"
+      },
+      {
+        "id": "4.A.3.b.5",
+        "name": "Repairing and Maintaining Electronic Equipment"
+      }
+    ]
+  },
+  "1.A.2.b.1": {
+    "name": "Control Precision",
+    "activities": [
+      {
+        "id": "4.A.3.a.3",
+        "name": "Controlling Machines and Processes"
+      },
+      {
+        "id": "4.A.3.a.4",
+        "name": "Operating Vehicles, Mechanized Devices, or Equipment"
+      },
+      {
+        "id": "4.A.3.b.4",
+        "name": "Repairing and Maintaining Mechanical Equipment"
+      },
+      {
+        "id": "4.A.3.b.5",
+        "name": "Repairing and Maintaining Electronic Equipment"
+      }
+    ]
+  },
+  "1.A.2.b.2": {
+    "name": "Multilimb Coordination",
+    "activities": [
+      {
+        "id": "4.A.3.a.1",
+        "name": "Performing General Physical Activities"
+      },
+      {
+        "id": "4.A.3.a.2",
+        "name": "Handling and Moving Objects"
+      },
+      {
+        "id": "4.A.3.a.4",
+        "name": "Operating Vehicles, Mechanized Devices, or Equipment"
+      }
+    ]
+  },
+  "1.A.2.b.3": {
+    "name": "Response Orientation",
+    "activities": [
+      {
+        "id": "4.A.3.a.4",
+        "name": "Operating Vehicles, Mechanized Devices, or Equipment"
+      }
+    ]
+  },
+  "1.A.2.b.4": {
+    "name": "Rate Control",
+    "activities": [
+      {
+        "id": "4.A.3.a.3",
+        "name": "Controlling Machines and Processes"
+      },
+      {
+        "id": "4.A.3.a.4",
+        "name": "Operating Vehicles, Mechanized Devices, or Equipment"
+      }
+    ]
+  },
+  "1.A.2.c.1": {
+    "name": "Reaction Time",
+    "activities": [
+      {
+        "id": "4.A.3.a.3",
+        "name": "Controlling Machines and Processes"
+      },
+      {
+        "id": "4.A.3.a.4",
+        "name": "Operating Vehicles, Mechanized Devices, or Equipment"
+      }
+    ]
+  },
+  "1.A.2.c.2": {
+    "name": "Wrist-Finger Speed",
+    "activities": [
+      {
+        "id": "4.A.3.b.6",
+        "name": "Documenting/Recording Information"
+      }
+    ]
+  },
+  "1.A.3.a.1": {
+    "name": "Static Strength",
+    "activities": [
+      {
+        "id": "4.A.3.a.1",
+        "name": "Performing General Physical Activities"
+      },
+      {
+        "id": "4.A.3.a.2",
+        "name": "Handling and Moving Objects"
+      }
+    ]
+  },
+  "1.A.3.a.2": {
+    "name": "Explosive Strength",
+    "activities": [
+      {
+        "id": "4.A.3.a.1",
+        "name": "Performing General Physical Activities"
+      },
+      {
+        "id": "4.A.3.a.2",
+        "name": "Handling and Moving Objects"
+      }
+    ]
+  },
+  "1.A.3.a.3": {
+    "name": "Dynamic Strength",
+    "activities": [
+      {
+        "id": "4.A.3.a.1",
+        "name": "Performing General Physical Activities"
+      }
+    ]
+  },
+  "1.A.3.a.4": {
+    "name": "Trunk Strength",
+    "activities": [
+      {
+        "id": "4.A.3.a.1",
+        "name": "Performing General Physical Activities"
+      },
+      {
+        "id": "4.A.3.a.4",
+        "name": "Operating Vehicles, Mechanized Devices, or Equipment"
+      }
+    ]
+  },
+  "1.A.3.b.1": {
+    "name": "Stamina",
+    "activities": [
+      {
+        "id": "4.A.3.a.1",
+        "name": "Performing General Physical Activities"
+      }
+    ]
+  },
+  "1.A.3.c.1": {
+    "name": "Extent Flexibility",
+    "activities": [
+      {
+        "id": "4.A.3.a.1",
+        "name": "Performing General Physical Activities"
+      },
+      {
+        "id": "4.A.3.a.2",
+        "name": "Handling and Moving Objects"
+      },
+      {
+        "id": "4.A.3.b.4",
+        "name": "Repairing and Maintaining Mechanical Equipment"
+      },
+      {
+        "id": "4.A.3.b.5",
+        "name": "Repairing and Maintaining Electronic Equipment"
+      }
+    ]
+  },
+  "1.A.3.c.3": {
+    "name": "Gross Body Coordination",
+    "activities": [
+      {
+        "id": "4.A.3.a.1",
+        "name": "Performing General Physical Activities"
+      }
+    ]
+  },
+  "1.A.3.c.4": {
+    "name": "Gross Body Equilibrium",
+    "activities": [
+      {
+        "id": "4.A.3.a.1",
+        "name": "Performing General Physical Activities"
+      }
+    ]
+  },
+  "1.A.4.a.1": {
+    "name": "Near Vision",
+    "activities": [
+      {
+        "id": "4.A.1.a.1",
+        "name": "Getting Information"
+      },
+      {
+        "id": "4.A.1.a.2",
+        "name": "Monitoring Processes, Materials, or Surroundings"
+      },
+      {
+        "id": "4.A.1.b.1",
+        "name": "Identifying Objects, Actions, and Events"
+      },
+      {
+        "id": "4.A.1.b.2",
+        "name": "Inspecting Equipment, Structures, or Materials"
+      },
+      {
+        "id": "4.A.1.b.3",
+        "name": "Estimating the Quantifiable Characteristics of Products, Events, or Information"
+      },
+      {
+        "id": "4.A.2.a.1",
+        "name": "Judging the Qualities of Objects, Services, or People"
+      },
+      {
+        "id": "4.A.2.a.2",
+        "name": "Processing Information"
+      },
+      {
+        "id": "4.A.2.a.3",
+        "name": "Evaluating Information to Determine Compliance with Standards"
+      },
+      {
+        "id": "4.A.3.a.3",
+        "name": "Controlling Machines and Processes"
+      },
+      {
+        "id": "4.A.3.a.4",
+        "name": "Operating Vehicles, Mechanized Devices, or Equipment"
+      },
+      {
+        "id": "4.A.3.b.1",
+        "name": "Working with Computers"
+      },
+      {
+        "id": "4.A.3.b.2",
+        "name": "Drafting, Laying Out, and Specifying Technical Devices, Parts, and Equipment"
+      },
+      {
+        "id": "4.A.3.b.4",
+        "name": "Repairing and Maintaining Mechanical Equipment"
+      },
+      {
+        "id": "4.A.3.b.5",
+        "name": "Repairing and Maintaining Electronic Equipment"
+      },
+      {
+        "id": "4.A.3.b.6",
+        "name": "Documenting/Recording Information"
+      },
+      {
+        "id": "4.A.4.c.1",
+        "name": "Performing Administrative Activities"
+      }
+    ]
+  },
+  "1.A.4.a.2": {
+    "name": "Far Vision",
+    "activities": [
+      {
+        "id": "4.A.1.a.1",
+        "name": "Getting Information"
+      },
+      {
+        "id": "4.A.1.a.2",
+        "name": "Monitoring Processes, Materials, or Surroundings"
+      },
+      {
+        "id": "4.A.1.b.1",
+        "name": "Identifying Objects, Actions, and Events"
+      },
+      {
+        "id": "4.A.1.b.2",
+        "name": "Inspecting Equipment, Structures, or Materials"
+      },
+      {
+        "id": "4.A.1.b.3",
+        "name": "Estimating the Quantifiable Characteristics of Products, Events, or Information"
+      },
+      {
+        "id": "4.A.3.a.4",
+        "name": "Operating Vehicles, Mechanized Devices, or Equipment"
+      }
+    ]
+  },
+  "1.A.4.a.3": {
+    "name": "Visual Color Discrimination",
+    "activities": [
+      {
+        "id": "4.A.1.a.2",
+        "name": "Monitoring Processes, Materials, or Surroundings"
+      },
+      {
+        "id": "4.A.1.b.1",
+        "name": "Identifying Objects, Actions, and Events"
+      },
+      {
+        "id": "4.A.1.b.2",
+        "name": "Inspecting Equipment, Structures, or Materials"
+      },
+      {
+        "id": "4.A.3.b.5",
+        "name": "Repairing and Maintaining Electronic Equipment"
+      }
+    ]
+  },
+  "1.A.4.a.4": {
+    "name": "Night Vision",
+    "activities": [
+      {
+        "id": "4.A.3.a.4",
+        "name": "Operating Vehicles, Mechanized Devices, or Equipment"
+      }
+    ]
+  },
+  "1.A.4.a.5": {
+    "name": "Peripheral Vision",
+    "activities": [
+      {
+        "id": "4.A.3.a.4",
+        "name": "Operating Vehicles, Mechanized Devices, or Equipment"
+      }
+    ]
+  },
+  "1.A.4.a.6": {
+    "name": "Depth Perception",
+    "activities": [
+      {
+        "id": "4.A.1.b.2",
+        "name": "Inspecting Equipment, Structures, or Materials"
+      },
+      {
+        "id": "4.A.1.b.3",
+        "name": "Estimating the Quantifiable Characteristics of Products, Events, or Information"
+      },
+      {
+        "id": "4.A.3.a.4",
+        "name": "Operating Vehicles, Mechanized Devices, or Equipment"
+      }
+    ]
+  },
+  "1.A.4.a.7": {
+    "name": "Glare Sensitivity",
+    "activities": [
+      {
+        "id": "4.A.3.a.4",
+        "name": "Operating Vehicles, Mechanized Devices, or Equipment"
+      }
+    ]
+  },
+  "1.A.4.b.1": {
+    "name": "Hearing Sensitivity",
+    "activities": [
+      {
+        "id": "4.A.1.a.2",
+        "name": "Monitoring Processes, Materials, or Surroundings"
+      },
+      {
+        "id": "4.A.1.b.1",
+        "name": "Identifying Objects, Actions, and Events"
+      },
+      {
+        "id": "4.A.1.b.2",
+        "name": "Inspecting Equipment, Structures, or Materials"
+      },
+      {
+        "id": "4.A.3.a.4",
+        "name": "Operating Vehicles, Mechanized Devices, or Equipment"
+      }
+    ]
+  },
+  "1.A.4.b.2": {
+    "name": "Auditory Attention",
+    "activities": [
+      {
+        "id": "4.A.1.a.2",
+        "name": "Monitoring Processes, Materials, or Surroundings"
+      },
+      {
+        "id": "4.A.1.b.2",
+        "name": "Inspecting Equipment, Structures, or Materials"
+      },
+      {
+        "id": "4.A.3.a.4",
+        "name": "Operating Vehicles, Mechanized Devices, or Equipment"
+      },
+      {
+        "id": "4.A.4.a.8",
+        "name": "Performing for or Working Directly with the Public"
+      }
+    ]
+  },
+  "1.A.4.b.3": {
+    "name": "Sound Localization",
+    "activities": [
+      {
+        "id": "4.A.3.a.4",
+        "name": "Operating Vehicles, Mechanized Devices, or Equipment"
+      }
+    ]
+  },
+  "1.A.4.b.4": {
+    "name": "Speech Recognition",
+    "activities": [
+      {
+        "id": "4.A.1.a.1",
+        "name": "Getting Information"
+      },
+      {
+        "id": "4.A.4.a.1",
+        "name": "Interpreting the Meaning of Information for Others"
+      },
+      {
+        "id": "4.A.4.a.2",
+        "name": "Communicating with Supervisors, Peers, or Subordinates"
+      },
+      {
+        "id": "4.A.4.a.3",
+        "name": "Communicating with People Outside the Organization"
+      },
+      {
+        "id": "4.A.4.a.4",
+        "name": "Establishing and Maintaining Interpersonal Relationships"
+      },
+      {
+        "id": "4.A.4.a.5",
+        "name": "Assisting and Caring for Others"
+      },
+      {
+        "id": "4.A.4.a.6",
+        "name": "Selling or Influencing Others"
+      },
+      {
+        "id": "4.A.4.a.7",
+        "name": "Resolving Conflicts and Negotiating with Others"
+      },
+      {
+        "id": "4.A.4.a.8",
+        "name": "Performing for or Working Directly with the Public"
+      },
+      {
+        "id": "4.A.4.b.1",
+        "name": "Coordinating the Work and Activities of Others"
+      },
+      {
+        "id": "4.A.4.b.2",
+        "name": "Developing and Building Teams"
+      },
+      {
+        "id": "4.A.4.b.3",
+        "name": "Training and Teaching Others"
+      },
+      {
+        "id": "4.A.4.b.4",
+        "name": "Guiding, Directing, and Motivating Subordinates"
+      },
+      {
+        "id": "4.A.4.b.5",
+        "name": "Coaching and Developing Others"
+      },
+      {
+        "id": "4.A.4.b.6",
+        "name": "Providing Consultation and Advice to Others"
+      },
+      {
+        "id": "4.A.4.c.2",
+        "name": "Staffing Organizational Units"
+      }
+    ]
+  },
+  "1.A.4.b.5": {
+    "name": "Speech Clarity",
+    "activities": [
+      {
+        "id": "4.A.4.a.1",
+        "name": "Interpreting the Meaning of Information for Others"
+      },
+      {
+        "id": "4.A.4.a.2",
+        "name": "Communicating with Supervisors, Peers, or Subordinates"
+      },
+      {
+        "id": "4.A.4.a.3",
+        "name": "Communicating with People Outside the Organization"
+      },
+      {
+        "id": "4.A.4.a.4",
+        "name": "Establishing and Maintaining Interpersonal Relationships"
+      },
+      {
+        "id": "4.A.4.a.5",
+        "name": "Assisting and Caring for Others"
+      },
+      {
+        "id": "4.A.4.a.6",
+        "name": "Selling or Influencing Others"
+      },
+      {
+        "id": "4.A.4.a.7",
+        "name": "Resolving Conflicts and Negotiating with Others"
+      },
+      {
+        "id": "4.A.4.a.8",
+        "name": "Performing for or Working Directly with the Public"
+      },
+      {
+        "id": "4.A.4.b.1",
+        "name": "Coordinating the Work and Activities of Others"
+      },
+      {
+        "id": "4.A.4.b.2",
+        "name": "Developing and Building Teams"
+      },
+      {
+        "id": "4.A.4.b.3",
+        "name": "Training and Teaching Others"
+      },
+      {
+        "id": "4.A.4.b.4",
+        "name": "Guiding, Directing, and Motivating Subordinates"
+      },
+      {
+        "id": "4.A.4.b.5",
+        "name": "Coaching and Developing Others"
+      },
+      {
+        "id": "4.A.4.b.6",
+        "name": "Providing Consultation and Advice to Others"
+      },
+      {
+        "id": "4.A.4.c.2",
+        "name": "Staffing Organizational Units"
+      }
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+[
+  {"title":"Software Developer","riasec_code":"IRC","required_subjects":"Mathematics,Computer Studies,Physical Sciences","skills":"Programming,Logic,Problem Solving","demand_level":"high","description":"Designs, builds and maintains software systems."},
+  {"title":"Civil Engineer","riasec_code":"RIE","required_subjects":"Mathematics,Physical Sciences","skills":"Design,Maths,Project Management","demand_level":"high","description":"Designs and supervises construction of infrastructure."},
+  {"title":"Medical Doctor","riasec_code":"ISR","required_subjects":"Mathematics,Physical Sciences,Biology","skills":"Biology,Empathy,Analysis","demand_level":"high","description":"Diagnoses and treats patients."},
+  {"title":"Accountant","riasec_code":"CEI","required_subjects":"Mathematics,Accounting","skills":"Numeracy,Attention to Detail,Ethics","demand_level":"medium","description":"Prepares and audits financial records."},
+  {"title":"Teacher","riasec_code":"SAE","required_subjects":"English,Mathematics","skills":"Communication,Patience,Planning","demand_level":"high","description":"Educates and mentors learners."},
+  {"title":"Graphic Designer","riasec_code":"AER","required_subjects":"Art,English","skills":"Creativity,Visual Design,Software","demand_level":"medium","description":"Creates visual content for brands and media."},
+  {"title":"Agricultural Scientist","riasec_code":"IRS","required_subjects":"Biology,Agriculture,Chemistry","skills":"Research,Field Work,Analysis","demand_level":"high","description":"Improves crop and livestock production."},
+  {"title":"Electrician","riasec_code":"RCE","required_subjects":"Mathematics,Physical Sciences","skills":"Technical,Hands-on,Safety","demand_level":"high","description":"Installs and repairs electrical systems."},
+  {"title":"Entrepreneur","riasec_code":"ECS","required_subjects":"Business Studies,Mathematics","skills":"Leadership,Risk-taking,Finance","demand_level":"medium","description":"Starts and runs business ventures."},
+  {"title":"Nurse","riasec_code":"SIR","required_subjects":"Biology,Mathematics","skills":"Care,Communication,Stamina","demand_level":"high","description":"Provides patient care in clinical settings."},
+  {"title":"Data Analyst","riasec_code":"ICE","required_subjects":"Mathematics,Computer Studies","skills":"Statistics,Programming,Visualisation","demand_level":"high","description":"Interprets data to support decisions."},
+  {"title":"Journalist","riasec_code":"AES","required_subjects":"English,History","skills":"Writing,Research,Communication","demand_level":"low","description":"Investigates and reports news stories."},
+  {"title":"Environmental Scientist","riasec_code":"IRS","required_subjects":"Biology,Geography,Chemistry","skills":"Research,Field Work,Data Analysis","demand_level":"medium","description":"Studies and protects the natural environment."},
+  {"title":"Mechanical Technician","riasec_code":"RCI","required_subjects":"Mathematics,Physical Sciences","skills":"Technical,Repair,Precision","demand_level":"high","description":"Maintains and repairs mechanical equipment."},
+  {"title":"Social Worker","riasec_code":"SEC","required_subjects":"English,Life Orientation","skills":"Empathy,Advocacy,Communication","demand_level":"medium","description":"Supports vulnerable individuals and communities."}
+]

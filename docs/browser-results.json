@@ -1,0 +1,105 @@
+[
+  {
+    "page": "dashboard.php",
+    "content": 375,
+    "errors": false,
+    "heading": "Hi, Synthetic ✳",
+    "unlabelled": 0,
+    "viewport": 375
+  },
+  {
+    "page": "profile.php",
+    "content": 375,
+    "errors": false,
+    "heading": "Your academic profile",
+    "unlabelled": 0,
+    "viewport": 375
+  },
+  {
+    "page": "assessment.php",
+    "content": 375,
+    "errors": false,
+    "heading": "Your career interest assessment",
+    "unlabelled": 0,
+    "viewport": 375
+  },
+  {
+    "page": "directory.php",
+    "content": 375,
+    "errors": false,
+    "heading": "Education & funding",
+    "unlabelled": 0,
+    "viewport": 375
+  },
+  {
+    "page": "compare.php",
+    "content": 375,
+    "errors": false,
+    "heading": "Compare up to three careers",
+    "unlabelled": 0,
+    "viewport": 375
+  },
+  {
+    "page": "roadmap.php?id=1",
+    "content": 375,
+    "errors": false,
+    "heading": "Software Developers",
+    "unlabelled": 0,
+    "viewport": 375
+  },
+  {
+    "page": "teacher.php",
+    "content": 390,
+    "errors": false,
+    "unlabelled": 0,
+    "viewport": 390
+  },
+  {
+    "page": "assessment.php?lang=st",
+    "size": 320,
+    "content": 305,
+    "heading": "Tlhahlobo ea lithahasello tsa hao tsa mosebetsi",
+    "unlabelled": 0,
+    "viewport": 305
+  },
+  {
+    "page": "directory.php",
+    "size": 320,
+    "content": 305,
+    "heading": "Education & funding",
+    "unlabelled": 0,
+    "viewport": 305
+  },
+  {
+    "page": "history.php",
+    "size": 320,
+    "content": 305,
+    "heading": "Your interests over time",
+    "unlabelled": 0,
+    "viewport": 305
+  },
+  {
+    "page": "simulate.php",
+    "size": 320,
+    "content": 305,
+    "heading": "Explore your academic choices",
+    "unlabelled": 0,
+    "viewport": 305
+  },
+  {
+    "page": "progress.php",
+    "size": 320,
+    "content": 305,
+    "heading": "Tsoelo-pele ea ka",
+    "unlabelled": 0,
+    "viewport": 305
+  },
+  {
+    "page": "account.php",
+    "size": 320,
+    "content": 305,
+    "heading": "Account & privacy",
+    "unlabelled": 0,
+    "viewport": 305
+  }
+]
