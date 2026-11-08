@@ -1,19 +1,58 @@
 <?php
-require_once 'config/layout.php';require_once 'config/guidance.php';
-$type=isset($directoryType)?$directoryType:(is_string($_GET['type']??null)?$_GET['type']:'programmes');if(!in_array($type,['programmes','institutions','scholarships'],true))$type='programmes';
-$q=is_string($_GET['q']??null)?mb_substr(trim($_GET['q']),0,100):'';$status=is_string($_GET['status']??null)?$_GET['status']:'';$level=is_string($_GET['level']??null)?mb_substr($_GET['level'],0,80):'';
-$items=array_values(array_filter(catalogue($type),static function($p)use($q,$status,$level,$type){$text=json_encode([$p['title']??$p['programme']??$p['name']??'',$p['university']??$p['provider']??'', $p['fields']??[]],JSON_UNESCAPED_UNICODE);return ($q===''||mb_stripos($text,$q)!==false)&&($level===''||stripos($p['level']??'',$level)!==false)&&($status===''||($type==='scholarships'?funding_status($p):($p['verification_status']??''))===$status);}));
-page_start('Education and funding directory','directory');
+require_once 'config/layout.php';
+require_login();
+$tab = ($_GET['tab'] ?? 'programmes') === 'funding' ? 'funding' : 'programmes';
+$search = mb_substr(trim((string)($_GET['q'] ?? '')),0,80);
+$base = rtrim(env_value('AI_API', 'http://127.0.0.1:5001'), '/');
+$path = $tab === 'programmes' ? '/programmes' : '/scholarships';
+$items = []; $offline = false;
+if (function_exists('curl_init')) {
+    $ch = curl_init($base.$path);
+    curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER=>true, CURLOPT_CONNECTTIMEOUT=>3,
+        CURLOPT_TIMEOUT=>12, CURLOPT_FOLLOWLOCATION=>false,
+        CURLOPT_HTTPHEADER=>['X-Internal-Token: '.env_value('INTERNAL_API_TOKEN')]]);
+    $raw = curl_exec($ch); $code = curl_getinfo($ch, CURLINFO_HTTP_CODE); curl_close($ch);
+    $response = $code === 200 && is_string($raw) ? json_decode($raw, true) : null;
+    if (!is_array($response)) $offline=true;
+    else $items = $response[$tab === 'funding' ? 'scholarships' : 'programmes'] ?? [];
+} else $offline=true;
+if (!is_array($items)) $items=[];
+if ($search !== '') {
+    $items = array_values(array_filter($items, static function($item) use($search) {
+        return is_array($item) && mb_stripos(json_encode(array_intersect_key($item,array_flip(['programme','university','level','title','provider']))),$search)!==false;
+    }));
+}
+page_start('Programmes and funding','careers');
 ?>
-<main id="main" class="wide page-space"><div class="page-intro"><span class="eyebrow muted-eyebrow">PATHWAYS IN LESOTHO</span><h1>Education & funding</h1><p>Explore official sources and save options to investigate. Source verification covers the stated facts; it does not certify accreditation or current availability.</p></div>
-<nav class="tool-links" aria-label="Directory sections"><a class="btn btn-outline" href="directory.php?type=institutions">Institutions</a><a class="btn btn-outline" href="directory.php">Programmes</a><a class="btn btn-outline" href="scholarships.php">Scholarships & bursaries</a><a class="btn btn-primary" href="eligibility.php">Check requirements</a></nav>
-<section class="panel"><form class="form-grid" method="get"><input type="hidden" name="type" value="<?= e($type) ?>"><div class="form-row"><label>Search<input name="q" maxlength="100" value="<?= e($q) ?>" placeholder="Institution, programme, provider or field"></label><label>Qualification level<input name="level" maxlength="80" value="<?= e($level) ?>" placeholder="Degree, Diploma, Secondary"></label><label>Status<select name="status"><option value="">All statuses</option><?php foreach($type==='scholarships'?['open','upcoming','closed','dates_unconfirmed']:['verified','unverified'] as $v):?><option value="<?= $v ?>" <?= $status===$v?'selected':'' ?>><?= e(str_replace('_',' ',$v)) ?></option><?php endforeach;?></select></label></div><button class="btn btn-primary">Filter directory</button></form></section>
-<p><?= count($items) ?> records. Unknown dates and requirements are left blank or explicitly marked.</p><div class="careers-grid">
-<?php foreach($items as $p):$title=$p['title']??$p['programme']??$p['name'];?><article class="panel directory-card"><span class="badge"><?= e($p['verification_status']) ?> source information</span><h2><?= e($title) ?></h2>
-<?php if($type==='institutions'):?><p><?= e($p['accreditation_status']??'Accreditation not assessed') ?></p>
-<?php elseif($type==='programmes'):?><p><strong><?= e($p['university']??'') ?></strong> · <?= e($p['level']??'Unknown level') ?></p><p>Duration: <?= isset($p['duration_years'])?e((string)$p['duration_years']).' years':'confirm with institution' ?><br>Study modes: <?= e(implode(', ',$p['study_modes']??[])?:'not established') ?></p><p><?= e($p['entry_requirements']??'Minimum admission requirements are not yet verified.') ?></p><p>Subjects: <?= e(implode(', ',$p['required_subjects']??[])?:'not verified') ?></p><p>Related careers: <?= e(implode(', ',$p['related_careers']??[])?:'not mapped') ?></p><a href="eligibility.php?programme=<?= e(urlencode($p['id'])) ?>">Check this programme ↗</a>
-<?php else:?><p><strong><?= e($p['provider']) ?></strong> · <?= e($p['level']??'') ?></p><span class="badge"><?= e(str_replace('_',' ',funding_status($p))) ?></span><p><?= e($p['eligibility']??'Confirm conditions with provider.') ?></p><p>Fields: <?= e(implode(', ',$p['fields']??[])) ?></p><p>Opens: <?= e($p['opens_on']??'not confirmed') ?><br>Closes: <?= e($p['closes_on']??'not confirmed') ?></p><details><summary>Required documents</summary><ul><?php foreach($p['documents']??[] as $doc):?><li><?= e($doc) ?></li><?php endforeach;?></ul><p>Use the provider’s current checklist; do not upload personal documents here.</p></details><?php endif;?>
-<p class="fine-print"><?= e($p['verification_scope']??'Legacy unverified sample. Confirm every detail before relying on it.') ?></p><p class="fine-print">Source: <?= e($p['source_document']??$p['source']??'not recorded') ?><br>Publication year: <?= e(isset($p['publication_year'])?(string)$p['publication_year']:'not published') ?><br>Last checked: <?= e($p['last_verified']??'not verified') ?></p><?= source_link($p) ?>
-<?php if(current_user()&&$type!=='institutions'):echo saved_button($type==='programmes'?'programme':'scholarship',$p['id'],$title);endif;?></article><?php endforeach;?></div>
-<?php if(!$items):?><div class="panel empty-state"><h2>No matching records</h2><p>Try fewer filters. Absence from this directory does not mean an opportunity does not exist.</p></div><?php endif;?>
-<p><a href="offline.html">Low-data offline reference guide ↗</a></p></main><?php page_end(); ?>
+<main id="main" class="wide page-space">
+  <a href="dashboard.php" class="back-link">← Your dashboard</a>
+  <div class="page-intro"><span class="eyebrow muted-eyebrow">LESOTHO STUDY ROUTES</span><h1>Programmes &amp; funding</h1>
+    <p>Explore possible study routes and financial support. Information must be confirmed directly with its provider before applying.</p></div>
+  <div class="tool-nav"><a class="btn <?= $tab==='programmes'?'btn-primary':'btn-outline' ?>" href="directory.php?tab=programmes">Programmes</a>
+    <a class="btn <?= $tab==='funding'?'btn-primary':'btn-outline' ?>" href="directory.php?tab=funding">Funding &amp; bursaries</a></div>
+  <section class="panel" style="margin-top:20px">
+    <form method="get" class="career-search"><input type="hidden" name="tab" value="<?= e($tab) ?>">
+      <label class="visually-hidden" for="search-dir">Search listings</label>
+      <input id="search-dir" type="search" name="q" value="<?= e($search) ?>" maxlength="80" placeholder="Search programme, institution or provider">
+      <button class="btn btn-primary">Search</button></form>
+  </section>
+  <?php if ($offline): ?><div class="alert error">The directory service is offline. Start Flask and retry.</div>
+  <?php elseif (!$items): ?><div class="panel" style="margin-top:22px"><h2>No matching listings</h2><p>Try a broader search or select another tab.</p></div>
+  <?php else: ?><div class="careers-grid" style="margin-top:20px">
+    <?php foreach ($items as $item): if(!is_array($item)) continue;
+      $name = $tab==='programmes' ? ($item['programme'] ?? '') : ($item['title'] ?? '');
+      $owner = $tab==='programmes' ? ($item['university'] ?? '') : ($item['provider'] ?? '');
+      $url = $item['source_url'] ?? '';
+      $safe = filter_var($url, FILTER_VALIDATE_URL) && parse_url($url,PHP_URL_SCHEME)==='https';
+      $verified = !empty($item['verified']) && $tab==='programmes'; ?>
+      <article class="career-card"><span class="eyebrow muted-eyebrow"><?= $verified?'SOURCE-REVIEWED':'CHECK WITH PROVIDER' ?></span>
+      <h2><?= e((string)$name) ?></h2><p><strong><?= e((string)$owner) ?></strong>
+      <?php if($tab==='programmes' && !empty($item['level'])): ?> · <?= e($item['level']) ?><?php endif; ?></p>
+      <?php if($tab==='funding'): ?><p class="small muted"><?= e((string)($item['status_note'] ?? 'Intake and eligibility unconfirmed')) ?></p><?php else: ?>
+      <p class="small muted"><?= $verified?'Reviewed source reference; verify accreditation and current intake.':'Unverified sample listing. Do not treat as admission evidence.' ?></p><?php endif; ?>
+      <?php if($safe): ?><a class="text-link" href="<?= e($url) ?>" target="_blank" rel="noopener noreferrer">View source ↗</a><?php endif; ?></article>
+    <?php endforeach; ?>
+  </div><?php endif; ?>
+  <p class="fine-print" style="margin-top:20px">A listed pathway does not guarantee admission, availability or funding. Only explicitly verified, current rules contribute to eligibility scoring.</p>
+</main>
+<?php page_end(); ?>

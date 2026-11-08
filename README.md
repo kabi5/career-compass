@@ -1,95 +1,126 @@
-# Career Compass — Lesotho career guidance
+# Career Compass — Career Guidance System for Lesotho
 
-Career Compass is a PHP/MySQL application with a private Python/Flask decision-support service. It helps secondary-school learners explore interests, compare careers, check documented academic prerequisites and build development plans. The original green, cream and peach interface and multi-page architecture are retained.
+## Lesotho five-factor scoring update (November 2026)
 
-**This is a research and demonstration implementation, not a validated psychometric test, trained outcome predictor, admissions authority or employment forecasting system.** Real-school rollout still requires local content/translation review, safeguarding arrangements and operational deployment validation.
+This package includes the **ls-v1.0 exploratory matching engine**. It uses the following proposed, **not yet validated**, weights when all factors have credible data:
 
-## Implemented modules
+| Factor | Weight |
+| --- | ---: |
+| RIASEC interest alignment | 40% |
+| Academic preparation | 25% |
+| Verified subject-entry readiness | 15% |
+| Verified study/training pathways | 10% |
+| Sourced occupation-level opportunities | 10% |
 
-- Detailed optional profiles: subjects, LGCSE grades, percentage marks, aspirations, skills, preferences and guidance needs.
-- Configurable, explained matching with separate interest alignment, academic preparation and subject/skill/preference/aspiration components; missing components are excluded and remaining weights renormalised.
-- A 24-item exploratory RIASEC assessment with complete-answer checks, keyboard-friendly controls, progress, draft Sesotho questions, retained histories and comparisons.
-- Profile versions and recommendation runs; recalculate after a profile change without another assessment; retain earlier recommendations and their explanations.
-- Official-source institution/programme/funding directory, prerequisite checker, temporary grade/subject scenarios and up-to-three career comparison.
-- Saved careers, programmes and funding opportunities; editable roadmaps, milestones and direct PDF guidance downloads.
-- Recommendation-usefulness feedback and a local, source-linked retrieval assistant. External generative AI is not called by the learner chatbot.
-- Teacher/counsellor portal with administrator-confirmed school assignments, explicit revocable learner grants, restricted notes and suppressed/banded aggregate CSV reports.
-- Administration for users/schools, staged institution/programme/scholarship/career-reference edits, a different reviewer before publication, audit events and configuration health.
-- Hashed passwords, fresh role checks, secure session controls, CSRF, persistent throttles, one-use hashed recovery/verification tokens, configurable email transport, account export/deletion and retention maintenance.
-- English/Sesotho translation files, responsive forms, accessible score text/tables, reduced-motion support and an allowlisted public offline guide.
+The **24-item questionnaire is required** (four answers per RIASEC category). All 'strongly disagree' answers now yield 0 rather than 20 in that dimension. The learner profile accepts structured `Subject: Grade` lines and distinguishes LGCSE/COSC. The bundled local programme entries remain unverified, and `ai_engine/data/labour/opportunities.json` is intentionally empty. Consequently, a typical learner receives **exploratory career suggestions without a fabricated overall percentage** until sufficient verified evidence is available. Grade midpoints are indicative preparation signals, never official admission decisions. The dashboard and career-detail page reflect this distinction.
 
-## Start with Docker Compose
+**Existing XAMPP/MySQL deployments must be backed up, then migrated before serving the new PHP files:** `C:\xampp\php\php.exe scripts\migrate.php` from the project root. Do not reimport `schema.sql` over an existing database. The migration adds the qualification and score-evidence fields, allows an unknown numeric match and retains earlier data. Fresh installations import `database/schema.sql` once.
 
-1. Install/start Docker Desktop with Linux containers. Copy `.env.example` to `.env`.
-2. Set three **different random secrets** for MySQL root, the application database user and `INTERNAL_API_TOKEN` (at least 32 characters). Replace all `REPLACE_WITH` placeholders. Do not put real secrets in Git or the ZIP.
-3. Run `docker compose up --build -d` from the project root.
-4. Visit [http://localhost:8080](http://localhost:8080). The web startup runs additive migrations and seeds missing directory records. MySQL and Flask have no published ports.
-5. Register a learner, save a profile, complete the assessment and explore the new dashboard tools.
+Run the engine checks with `python -m unittest discover -s tests -p test_recommendations.py -v`. For complete endpoint tests, install the project dependencies and `pytest`, then run `python -m pytest tests -q`. Before deploying, confirm that PHP has cURL, PDO MySQL and mbstring, that MySQL is accessible and that the Flask service can respond to `/recommend`. See `docs/LESOTHO_SCORING_IMPLEMENTATION.md` for the data schema and release checklist.
 
-Existing deployments: **back up and test restoration before deploying**; retain the MySQL volume. Never use `docker compose down -v` for an upgrade. Detailed startup, upgrade and recovery instructions: [Docker deployment](docs/DEPLOYMENT_DOCKER.md).
+**Source policy:** No institution, programme, entry rule, accreditation or employment outlook is certified by the sample files. Review and document official sources and validity dates before enabling those scoring factors. The current 40/25/15/10/10 weights and 24 questionnaire items require expert review, usability testing and evaluation before being described as scientifically validated.
 
-## Start with Windows/XAMPP
+A redesigned, responsive, multi-page career guidance website built on the original **PHP + MySQL + Python/Flask** project. It helps secondary-school learners explore RIASEC interests, receive transparent career suggestions, inspect possible Lesotho study routes, and ask a question-answering assistant. This is an **educational decision-support prototype**, not a validated psychometric assessment, a certified admission service, or a live labour-market forecasting system.
 
-Start XAMPP MySQL. Use PHP 8.0+ with `pdo_mysql`, `curl`, `mbstring` and `iconv`; PHP 8.3+ is preferred for a new installation. Use Python 3.11+.
+## What has been upgraded
 
-```powershell
-cd C:\xampp\htdocs\career-guidance-system
-# Configure these for YOUR database. Local XAMPP defaults are demonstration-only.
-$env:DB_HOST='127.0.0.1'
-$env:DB_PORT='3306'
-$env:DB_NAME='career_guidance'
-$env:DB_USER='root'
-$env:DB_PASSWORD=''
-C:\xampp\mysql\bin\mysql.exe -u root -e "CREATE DATABASE IF NOT EXISTS career_guidance CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-C:\xampp\php\php.exe scripts\migrate.php
-py -3 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r ai_engine\requirements.txt -r tests\requirements.txt
-.\.venv\Scripts\python.exe ai_engine\app.py
+- Fully redesigned landing page, navigation, dashboard, profile, career assessment, career detail, career browser, sign-in, registration and assistant.
+- Accessible responsive design (green, cream, peach), keyboard focus states, mobile menu and small-screen layouts; no external design framework required.
+- 24 exploratory RIASEC assessment questions added to initial database setup.
+- Fixed the original mismatch: PHP tried inserting `holland_code`, `education_level`, and `local_programmes` into database columns that did not exist.
+- Safer password requirements, credential hashing, prepared SQL, session renewal at login, CSRF validation on state-changing actions, simple per-session throttling, safer error handling, and private AI API token support.
+- Transparent matching with reference career-interest vectors and academic factors. Removed unsupported local job-demand claims. Approximate matching **is not the same as a trained ML predictor**.
+- Reference career browser, optional retrieval-based chat; generative AI is **disabled by default** for learner privacy.
+- A Docker Compose development/staging deployment configuration, XAMPP instructions, unit tests and a non-destructive database migration script.
+
+## Recommended option — Docker Compose (Windows / Linux)
+
+**Prerequisites:** Docker Desktop running, with Docker Compose available. Production should use a secure HTTPS reverse proxy.
+
+1. Extract this archive to a new project folder. Open a terminal in that folder (the one containing `docker-compose.yml`).
+2. Copy `.env.example` to `.env`. Fill in **three different long random secrets** for `MYSQL_ROOT_PASSWORD`, `DB_PASSWORD` and `INTERNAL_API_TOKEN`. For example, generate a 64-character token from a trusted password manager. **Do not use the example placeholder values and never publish `.env`.**
+3. Run:
+
+   ```bash
+   docker compose up --build -d
+   ```
+4. Wait for services to become healthy (`docker compose ps`). Visit **http://localhost:8080**.
+5. Register a learner account, fill in a profile, complete the assessment, and check the recommendations, details and chatbot.
+6. To see logs use `docker compose logs --tail=100 web ai db`.
+7. To stop: `docker compose down`. **Never use `docker compose down -v` unless you intend to delete the database.**
+
+For a remote server, put an HTTPS reverse proxy in front of the web container. The compose file binds the website to **127.0.0.1:8080** intentionally, so it is not exposed to the internet directly. The AI engine and MySQL are internal-only services. Configure TLS, set `APP_FORCE_HTTPS=1` when behind a correctly configured HTTPS reverse proxy, backup schedules, monitoring, IP/firewall policy, school consent requirements, an operator privacy/contact policy and a tested restore procedure before public launch. Run the app only on infrastructure that allows PHP/MySQL and the Python service; a static hosting provider alone will not run it.
+
+**Existing deployments**: First back up MySQL. Deploy the new code, keep the existing MySQL database, and run `php scripts/migrate.php` in the *web runtime* with DB environment variables present. This adds the three missing recommendation fields if absent and safely seeds the questions. It does not remove accounts or recommendations. On Docker:
+
+```bash
+docker compose exec -T web php -r 'echo "PHP connection test: "; $p=new PDO("mysql:host=".getenv("DB_HOST").";dbname=".getenv("DB_NAME"),getenv("DB_USER"),getenv("DB_PASSWORD")); echo "OK\n";'
 ```
 
-Leave Flask running. In a second PowerShell window with the same database environment:
+For an existing Docker database, run `docker compose exec web php /var/www/scripts/migrate.php` **after backing up your database**. For XAMPP, run `php scripts/migrate.php` from the project root with the correct database environment. The migration does not delete user records.
 
-```powershell
-$env:AI_API='http://127.0.0.1:5001'
-C:\xampp\php\php.exe -S 127.0.0.1:8080 -t frontend
+## Alternative — XAMPP on Windows 10
+
+1. Extract to **`C:\xampp\htdocs\career-guidance-system`**.
+2. Start **Apache** and **MySQL** from XAMPP.
+3. Open phpMyAdmin, choose **Import**, and import `database/schema.sql`. This creates the `career_guidance` database and seeds assessment questions. If the database already exists from an older version, **back it up** and run the non-destructive migration via PHP CLI.
+4. Configure PHP environment variables for database access, or set them in Apache's virtual-host configuration:
+   - `DB_HOST=127.0.0.1`
+   - `DB_NAME=career_guidance`
+   - `DB_USER=root` (local development only)
+   - `DB_PASSWORD=` (only if using XAMPP default local MySQL)
+   - `AI_API=http://127.0.0.1:5001`
+   - `INTERNAL_API_TOKEN=` (for local-only testing; use a shared secret for hosted deployments)
+5. Install Python 3.11 or later and create a fresh virtual environment:
+
+   ```powershell
+   cd C:\xampp\htdocs\career-guidance-system\ai_engine
+   py -3 -m venv .venv
+   .\.venv\Scripts\Activate.ps1
+   python -m pip install -r requirements.txt
+   python app.py
+   ```
+
+6. In your browser open **`http://localhost/career-guidance-system/frontend/`**. Keep the Python window open while testing the site.
+7. For local updates, run `C:\xampp\php\php.exe scripts\migrate.php` from your project root after confirming your DB settings. If you used environment configuration rather than default credentials, those variables must be set in that terminal too.
+
+**Important for hosting:** XAMPP default passwords, PHP development settings and Flask's single-process server are for local testing only. Do not publish them directly to the internet. The Docker AI image runs Gunicorn instead of Flask's development server.
+
+## Running checks
+
+```bash
+python -m pip install -r ai_engine/requirements.txt
+python -m pytest tests -q
 ```
 
-Visit [http://localhost:8080](http://localhost:8080). For XAMPP Apache instead, set the environment in its virtual host and visit `/career-guidance-system/frontend/`; CLI environment values do not automatically configure an already running Apache service. See [XAMPP deployment](docs/DEPLOYMENT_XAMPP.md). PHP reads server environment variables, **not** the root `.env` file; Compose reads `.env` for interpolation.
+PHP syntax lint: `php -l frontend/index.php` or run it on all PHP files. For a complete smoke test, the MySQL database and Flask service must both be running.
 
-## Administrator and educator setup
+## Where things live
 
-Register the operator account, then use the trusted CLI:
+| Location | Purpose |
+| --- | --- |
+| `frontend/` | PHP web pages |
+| `frontend/config/db.php` | Sessions, security helpers, database, internal API wrapper |
+| `frontend/config/layout.php` | Consistent site header/footer |
+| `frontend/assets/css/style.css` | Responsive visual design |
+| `frontend/assets/js/app.js` | Assessment progress and mobile menu |
+| `ai_engine/app.py` | Flask endpoints |
+| `ai_engine/model.py` | Transparent interest/academic matching |
+| `ai_engine/data/processed/` | International career-interest reference dataset |
+| `ai_engine/data/programmes/programmes.json` | Sample Lesotho tertiary programme listings; not independently verified |
+| `database/schema.sql` | Initial schema and 24 assessment questions |
+| `scripts/migrate.php` | Non-destructive old-schema upgrade |
+| `tests/` | Unit/API tests |
 
-```powershell
-php scripts/security_role.php --email=operator@example.org --role=admin
-php scripts/security_role.php --email=operator@example.org --role=admin --apply
-```
+## Known limitations and public-launch checklist
 
-The first command previews the change. Create a second authorised administrator for independent content review. Administrator credentials are never seeded. An admin creates schools and assigns confirmed memberships and teacher roles. Learners then grant a specific same-school teacher access in **Account & privacy**. An entered school name alone never grants access.
+1. **Data validity:** The included career dataset is not a Lesotho employment-demand dataset. A high match means similar expressed interests, not a 95% chance of career success. Research validation and fairness evaluation remain necessary.
+2. **Local educational information:** The supplied local programmes dataset has `verified: false` entries. Verify current programmes, duration, entry requirements and funding information against official institution prospectuses **before** treating them as authoritative. There is no automated update feed.
+3. **Learners may be minors:** The organisation operating this service must establish guardian/school consent as appropriate, retention/deletion policies, access-rights processes, and privacy compliance before real pupils submit information. The in-app privacy explanation is not a substitute for an operator-specific legally reviewed policy.
+4. **Accounts:** Authentication is implemented, but self-service password reset and email verification are **not implemented**. Deploying to a real school requires a supported secure account-recovery process and administrative support.
+5. **Abuse protection:** Per-session throttling is only a basic safeguard. Public deployment requires proxy-level rate limiting, monitoring and bot protection.
+6. **Administrator controls:** `admin.php` contains a protected aggregate dashboard only. It is not a full editor for career information. Content updates are performed through the checked-in reference files. No one can self-register as admin. Grant admin access only through a trusted database administrator.
+7. **Infrastructure:** This package is packaged for deployment, but must be deployed and tested on the target environment with functioning MySQL, Flask, HTTPS, backups and real school user testing before being called production-ready.
+8. **Secrets:** The original uploaded ZIP included an `ai_engine/.env` file, which this improved release deliberately **excludes**. If it contained an API key and the original archive was shared, rotate that key. Do not upload `.env` or `.git` to public storage.
 
-## Data and methodology
-
-The directory includes 14 institution references, 13 source-backed programme records, 13 retained unverified programme samples and three funding/enquiry records. Verification is limited to each record's `verification_scope`; accreditation and current intake are not inferred. **No bundled programme has a fully verified complete rule set.** Named prerequisites can be checked, failures explained and scenarios compared, while unresolved conditions remain undetermined. No fees, deadlines, acceptance results or labour-market forecasts are invented. See [source register](docs/SOURCES.md).
-
-The recommendation method uses cosine interest similarity and explicit heuristic factors. Default relative weights are interest 0.60, academic 0.20, subjects 0.10, aspirations 0.05, skills 0.025, preferences 0.025. They can be configured through `RECOMMENDATION_WEIGHTS` JSON in the AI environment. Academic percentages are never converted into LGCSE grades. No outcome-labelled training set was supplied, so there is no fitted ML model or accuracy claim.
-
-## Tests and evidence
-
-```powershell
-.\.venv\Scripts\python.exe -m pytest tests -q
-Get-ChildItem frontend,scripts,tests -Recurse -Filter *.php | ForEach-Object { php -l $_.FullName }
-```
-
-Integration tests require an explicitly isolated database and running local servers; do not run against a learner database. Commands and executed results are in [QA report](docs/QA_REPORT.md). Browser screenshots use synthetic test data only.
-
-## Documentation
-
-- [Inspection and changes](docs/INSPECTION.md)
-- [Technical implementation / Chapter 4](docs/IMPLEMENTATION.md)
-- [Research protocol / Chapter 5](docs/RESEARCH_EVALUATION.md)
-- [Implemented features and remaining limits](docs/FEATURES_AND_LIMITATIONS.md)
-- [Security, consent, email and maintenance](docs/SECURITY_DEPLOYMENT.md)
-- [Official sources and assessment licensing](docs/SOURCES.md)
-- [Docker deployment](docs/DEPLOYMENT_DOCKER.md) / [Windows/XAMPP deployment](docs/DEPLOYMENT_XAMPP.md)
-
-Email transport is not bundled and is disabled by default. Sesotho is a reviewable draft with English fallback. PDF downloads are simple paginated text reports; they are not tagged accessible PDFs. WCAG conformance, independent security review, psychometric validation and participant evaluation have not been claimed. Review the limits document before real-school deployment.
+*Original project source is preserved in spirit and expanded; no claim of completed academic evaluation, verified job-demand predictions, participant testing or production rollout is made.*

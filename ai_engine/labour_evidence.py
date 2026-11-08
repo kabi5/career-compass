@@ -32,8 +32,12 @@ def local_opportunity_evidence(soc_code, *, today=None, catalogue=None):
     result = {"score": None, "demand_level": "unknown",
               "status": "no_verified_occupation_evidence", "evidence": [],
               "national_context": data.get("national_context", []) if isinstance(data, dict) else []}
+    if not isinstance(data, dict) or data.get("country") != "LS":
+        return result
     for row in records if isinstance(records, list) else []:
         if not isinstance(row, dict) or row.get("soc_code") != soc_code:
+            continue
+        if row.get("country_code") != "LS":
             continue
         if row.get("occupation_classification") != "SOC2018" or row.get("verified") is not True:
             continue

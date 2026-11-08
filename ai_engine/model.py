@@ -1,4 +1,3 @@
-
 """Lesotho career exploration scoring v1.1: transparent, not a trained predictor.
 
 The displayed percentage is a comparison of usable factors, not admission
@@ -251,6 +250,3 @@ def recommend(riasec_scores, marks=None, subjects=None, aspirations="", top_n=5,
         })
     output.sort(key=lambda item: (item["data_coverage"], item["ranking_score"]), reverse=True)
     return output[:top_n]
-
-
-

@@ -11,7 +11,7 @@ $rec = $stmt->fetch();
 if (!$rec) {
     http_response_code(404);
     page_start('Career not found', 'careers');
-    echo '<main id="main" class="wide page-space"><div class="panel"><h1>Career match not found</h1><p>The recommendation may have been replaced by a new assessment.</p><a class="btn btn-primary" href="dashboard.php">Return to dashboard</a></div></main>';
+    echo '<main id="main" class="wide page-space"><div class="panel"><h1>Career match not found</h1><p>No recommendation with that ID belongs to your account.</p><a class="btn btn-primary" href="dashboard.php">Return to dashboard</a></div></main>';
     page_end();
     exit;
 }
@@ -30,21 +30,26 @@ $detailStmt->execute([$id, (int)$user['id']]);
 $rawEvidence = $detailStmt->fetchColumn();
 $evidence = is_string($rawEvidence) ? json_decode($rawEvidence, true) : [];
 $evidence = is_array($evidence) ? $evidence : [];
+if (!$evidence && !empty($rec['score_details'])) {
+    $evidence = json_decode((string)$rec['score_details'], true) ?: [];
+}
 
 $fullScore = $rec['match_score'] ?? null;
+$ranking = $rec['ranking_score'] ?? ($evidence['ranking_score'] ?? null);
+$status = (string)($rec['score_status'] ?? ($evidence['score_status'] ?? 'exploratory'));
 $hasFullScore = is_numeric($fullScore) && (float)$fullScore >= 0 && (float)$fullScore <= 100;
-$ranking = $evidence['ranking_score'] ?? null;
 $hasRanking = is_numeric($ranking) && (float)$ranking >= 0 && (float)$ranking <= 100;
-$coverage = $evidence['data_coverage'] ?? null;
-$hasCoverage = is_numeric($coverage) && (float)$coverage >= 0 && (float)$coverage <= 1;
-$coverageLabel = $hasCoverage ? round((float)$coverage * 100).'%' : 'Unavailable';
-
-if ($hasFullScore) {
+$coverage = $rec['data_coverage'] ?? null;
+if (!is_numeric($coverage) && isset($evidence['data_coverage'])) {
+    $coverage = (float)$evidence['data_coverage'] * 100;
+}
+$coverageLabel = is_numeric($coverage) ? round((float)$coverage).'%' : 'Unavailable';
+if ($hasFullScore && $status === 'complete') {
     $scoreLabel = number_format((float)$fullScore, 1).'%';
-    $scoreKind = 'approximate overall match';
-} elseif ($hasRanking) {
-    $scoreLabel = number_format((float)$ranking, 1).'%';
-    $scoreKind = 'preliminary alignment · exploratory';
+    $scoreKind = 'five-factor alignment';
+} elseif ($hasFullScore || $hasRanking) {
+    $scoreLabel = number_format((float)($hasFullScore ? $fullScore : $ranking), 1).'%';
+    $scoreKind = 'provisional alignment · '.($status === 'exploratory' ? 'exploratory' : 'incomplete evidence');
 } else {
     $scoreLabel = 'Exploratory';
     $scoreKind = 'not enough evidence for a percentage';
@@ -88,8 +93,8 @@ page_start($rec['career_title'], 'careers');
     <h1><?= e($rec['career_title']) ?></h1>
     <p>Explore why this career was suggested and what it could take to get there.</p>
     <span class="big-score"><?= e($scoreLabel) ?> <small><?= e($scoreKind) ?></small></span>
-    <?php if ($hasRanking && !$hasFullScore): ?>
-      <p class="fine-print">This percentage compares available factors only. It is not a complete five-factor career match.</p>
+    <?php if (($hasRanking || $hasFullScore) && $status !== 'complete'): ?>
+      <p class="fine-print">This provisional percentage compares available factors only. It does not represent a complete five-factor assessment or a chance of admission or employment.</p>
     <?php endif; ?>
   </section>
 
@@ -154,7 +159,11 @@ page_start($rec['career_title'], 'careers');
                 <?php if (!empty($p['missing_subjects']) && is_array($p['missing_subjects'])): ?>
                   <small>Subjects not listed in your profile: <?= e(implode(', ', $p['missing_subjects'])) ?></small>
                 <?php endif; ?>
-                <small class="unverified">Always check the current prospectus and official entry requirements. The listing alone does not guarantee admission.</small>
+                <small><?= !empty($p['verified']) ? 'Source-reviewed listing' : 'Unverified listing' ?> · Admission: <?= e(str_replace('_', ' ', $p['eligibility_status'] ?? 'insufficient_information')) ?></small>
+                <?php if (!empty($p['source_url']) && filter_var($p['source_url'], FILTER_VALIDATE_URL) && parse_url($p['source_url'], PHP_URL_SCHEME) === 'https'): ?>
+                  <small><a href="<?= e($p['source_url']) ?>" target="_blank" rel="noopener noreferrer">Check official source ↗</a></small>
+                <?php endif; ?>
+                <small class="unverified">Always confirm current intake, accreditation, entry rules and additional selection conditions with the institution.</small>
               </div>
             <?php endforeach; ?>
           </div>

@@ -1,22 +1,73 @@
 <?php
-require_once 'config/layout.php';require_once 'config/guidance.php';require_login();$uid=(int)current_user()['id'];$id=max(0,(int)($_GET['id']??$_POST['plan_id']??0));$error='';$plan=null;$milestones=[];
-$fields=['subjects'=>'Relevant subjects','targets'=>'Academic targets','skills'=>'Skills to develop','qualifications'=>'Related qualifications','institutions'=>'Educational institutions','funding'=>'Possible funding enquiries','activities'=>'Practical preparation'];
-if($id){$q=db()->prepare('SELECT * FROM career_plans WHERE id=? AND user_id=?');$q->execute([$id,$uid]);$plan=$q->fetch();if(!$plan){http_response_code(404);exit('Plan not found.');}}
-if($_SERVER['REQUEST_METHOD']==='POST'){verify_csrf($_POST['csrf']??null);try{$action=input_text('action',20);
- if($action==='create'){$career=input_text('career',160);$profile=profile_payload($uid);$a=latest_assessment($uid);if($a)$profile['riasec_scores']=json_array($a['riasec_scores']);$data=api_request('/compare',array_merge($profile,['career_titles'=>[$career]]));$r=$data['careers'][0]??null;if(!$r)throw new InvalidArgumentException('Choose an exact career title. The recommendation service must be running.');
- $programmes=array_values(array_filter(catalogue('programmes'),static function($p)use($career){foreach($p['related_careers']??[] as $keyword)if(stripos($career,$keyword)!==false)return true;return false;}));$institutions=[];$qualifications=[];$targets=[];
- foreach($programmes as $p){$label=($p['programme']??'').' at '.($p['university']??'').' ['.($p['verification_status']??'unverified').'] '.($p['source_url']??'');$qualifications[]=$label;$institutions[]=$p['university']??'';if(($p['verification_status']??'')==='verified')$targets[]=$p['entry_requirements']??'';}
- $funding=[];foreach(catalogue('scholarships') as $f)$funding[]=$f['title'].' — '.str_replace('_',' ',funding_status($f)).'. '.($f['verification_scope']??'').' '.($f['official_url']??'');
- $roadmap=['subjects'=>$r['recommended_subjects'].' (general guidance; confirm programme requirements)','targets'=>implode("\n",$targets)?:'Discuss realistic improvement targets with your teacher. No verified programme minimum is available for this career.','skills'=>'Communication, teamwork, digital literacy and problem solving are general development suggestions. Add skills specific to your chosen career with a counsellor.','qualifications'=>implode("\n",$qualifications)?:($r['education_level'].' — international reference, confirm local requirements.'),'institutions'=>implode("\n",array_unique($institutions))?:'No mapped institution yet. Explore the education directory with a counsellor.','funding'=>implode("\n",$funding),'activities'=>'Interview someone about their work; complete a small subject-related project; attend an open day; discuss subject choices with a teacher. Arrange visits through a trusted adult.'];
- db()->beginTransaction();db()->prepare('INSERT INTO career_plans(user_id,career_title,goal,roadmap) VALUES(?,?,?,?)')->execute([$uid,$career,'Explore a pathway towards '.$career,json_encode($roadmap)]);$id=(int)db()->lastInsertId();$q=db()->prepare('INSERT INTO roadmap_milestones(plan_id,title) VALUES(?,?)');foreach(['Review subjects and targets with a teacher','Confirm current entry requirements with an institution','Complete a practical career exploration activity','Review funding conditions and application dates'] as $m)$q->execute([$id,$m]);db()->commit();header('Location: roadmap.php?id='.$id);exit;
- }elseif(!$plan)throw new InvalidArgumentException('Choose one of your own plans.');
- elseif($action==='edit'){$roadmap=[];foreach($fields as $key=>$label)$roadmap[$key]=input_text($key,12000);$goal=input_text('goal',2000);if(!$goal)throw new InvalidArgumentException('Enter your career goal.');db()->prepare('UPDATE career_plans SET goal=?,roadmap=? WHERE id=? AND user_id=?')->execute([$goal,json_encode($roadmap),$id,$uid]);header('Location: roadmap.php?id='.$id);exit;}
- elseif($action==='milestone'){$title=input_text('title',250);$due=input_text('due_date',10);if(!$title)throw new InvalidArgumentException('Enter a milestone.');if($due){$date=DateTimeImmutable::createFromFormat('!Y-m-d',$due);if(!$date||$date->format('Y-m-d')!==$due)throw new InvalidArgumentException('Enter a valid due date.');}db()->prepare('INSERT INTO roadmap_milestones(plan_id,title,due_date) VALUES(?,?,?)')->execute([$id,$title,$due?:null]);header('Location: roadmap.php?id='.$id);exit;}
- elseif($action==='toggle'){$mid=(int)input_text('milestone_id',12);db()->prepare('UPDATE roadmap_milestones SET completed_at=IF(completed_at IS NULL,UTC_TIMESTAMP(),NULL) WHERE id=? AND plan_id=?')->execute([$mid,$id]);header('Location: roadmap.php?id='.$id);exit;}
- else throw new InvalidArgumentException('Unknown action.');
- }catch(InvalidArgumentException $ex){$error=$ex->getMessage();}catch(Throwable $ex){if(db()->inTransaction())db()->rollBack();error_log($ex->getMessage());$error='Unable to save this plan. Please try again.';}}
-if($plan){$roadmap=json_array($plan['roadmap']);$q=db()->prepare('SELECT * FROM roadmap_milestones WHERE plan_id=? ORDER BY id');$q->execute([$id]);$milestones=$q->fetchAll();}page_start('Career development roadmap');
+require_once 'config/layout.php';
+require_login();
+$uid=(int)$_SESSION['user_id'];
+$error=''; $saved=false;
+if($_SERVER['REQUEST_METHOD']==='POST') {
+    verify_csrf($_POST['csrf']??null);
+    if(rate_limited('roadmap',20,600)) $error='Too many changes. Please try again shortly.';
+    elseif(($_POST['action']??'')==='create') {
+        $recId=filter_input(INPUT_POST,'recommendation_id',FILTER_VALIDATE_INT) ?: 0;
+        $stmt=db()->prepare('SELECT r.id,r.career_title FROM recommendations r WHERE r.id=? AND r.user_id=?');
+        $stmt->execute([$recId,$uid]);$rec=$stmt->fetch();
+        if(!$rec) $error='Choose a recommendation from your account.';
+        else {
+            try {
+                $pdo=db();$pdo->beginTransaction();
+                $roadmap=['career'=>$rec['career_title'],'source_recommendation_id'=>(int)$rec['id'],
+                    'note'=>'Exploration plan only; verify all admission and funding information.'];
+                $pdo->prepare('INSERT INTO career_plans (user_id,career_title,goal,roadmap) VALUES (?,?,?,?)')
+                    ->execute([$uid,$rec['career_title'],'Research a possible pathway to '.$rec['career_title'],json_encode($roadmap,JSON_THROW_ON_ERROR)]);
+                $planId=(int)$pdo->lastInsertId();
+                $stmt=$pdo->prepare('INSERT INTO roadmap_milestones (plan_id,title) VALUES (?,?)');
+                foreach(['Discuss this career with a teacher or adviser',
+                    'Confirm current programme admission criteria',
+                    'Complete a career-related activity or interview',
+                    'Review available funding and closing dates'] as $title) $stmt->execute([$planId,$title]);
+                $pdo->commit();$saved=true;
+            } catch(Throwable $ex) {
+                if(db()->inTransaction()) db()->rollBack();
+                error_log('Roadmap creation failed: '.$ex->getMessage());$error='Could not save your career plan.';
+            }
+        }
+    } elseif(($_POST['action']??'')==='toggle') {
+        $id=filter_input(INPUT_POST,'milestone_id',FILTER_VALIDATE_INT)?:0;
+        $stmt=db()->prepare('UPDATE roadmap_milestones m JOIN career_plans p ON p.id=m.plan_id
+             SET m.completed_at=IF(m.completed_at IS NULL,NOW(),NULL)
+             WHERE m.id=? AND p.user_id=?');
+        $stmt->execute([$id,$uid]);
+        $saved=$stmt->rowCount()>0;
+        if(!$saved) $error='Could not find that milestone in your plan.';
+    }
+}
+$stmt=db()->prepare('SELECT id,career_title,goal,created_at FROM career_plans WHERE user_id=? ORDER BY id DESC LIMIT 20');
+$stmt->execute([$uid]);$plans=$stmt->fetchAll();
+$stmt=db()->prepare('SELECT r.id,r.career_title FROM recommendations r
+    JOIN recommendation_details d ON d.recommendation_id=r.id
+    WHERE r.user_id=? AND d.run_id=(SELECT MAX(id) FROM recommendation_runs WHERE user_id=?)
+    ORDER BY COALESCE(r.data_coverage,0) DESC,COALESCE(r.ranking_score,r.match_score,-1) DESC');
+$stmt->execute([$uid,$uid]);$recs=$stmt->fetchAll();
+page_start('My career roadmap','dashboard');
 ?>
-<main id="main" class="wide page-space"><div class="page-intro"><span class="eyebrow muted-eyebrow">ONE STEP AT A TIME</span><h1><?= $plan?e($plan['career_title']):'Create your career roadmap' ?></h1><p>A personal, editable plan for learning and exploration. Confirm qualifications, funding and academic requirements with their official sources.</p></div><?php if($error):?><div class="alert error" role="alert"><?= e($error) ?></div><?php endif;?>
-<?php if(!$plan):?><section class="panel"><form method="post" class="form-grid"><?= csrf_field() ?><input type="hidden" name="action" value="create"><label>Preferred career<input name="career" list="career-titles" maxlength="160" value="<?= e(is_string($_GET['career']??null)?$_GET['career']:'') ?>" required></label><?php career_options();?><button class="btn btn-primary">Generate my development plan</button></form></section>
-<?php else:?><div class="tool-links"><a href="report.php?plan=<?= $id ?>" class="btn btn-primary">Download plan as PDF</a><a href="progress.php" class="btn btn-outline">All my plans</a></div><div class="two-column"><section class="panel"><h2>My plan</h2><form method="post" class="form-grid"><?= csrf_field() ?><input type="hidden" name="action" value="edit"><input type="hidden" name="plan_id" value="<?= $id ?>"><label>Career goal<textarea name="goal" maxlength="2000" rows="3" required><?= e($plan['goal']) ?></textarea></label><?php foreach($fields as $key=>$label):?><label><?= e($label) ?><textarea name="<?= $key ?>" maxlength="12000" rows="4"><?= e($roadmap[$key]??'') ?></textarea></label><?php endforeach;?><button class="btn btn-primary">Save plan changes</button></form></section><section class="panel"><h2>Personal milestones</h2><p><?= count(array_filter($milestones,static fn($m)=>$m['completed_at']!==null)) ?> of <?= count($milestones) ?> completed</p><?php foreach($milestones as $m):?><form method="post" class="milestone"><?= csrf_field() ?><input type="hidden" name="action" value="toggle"><input type="hidden" name="plan_id" value="<?= $id ?>"><input type="hidden" name="milestone_id" value="<?= (int)$m['id'] ?>"><strong><?= e($m['title']) ?></strong><small>Due: <?= e($m['due_date']??'not set') ?> · <?= $m['completed_at']?'Completed '.e($m['completed_at']):'In progress' ?></small><button class="btn btn-outline"><?= $m['completed_at']?'Mark incomplete':'Mark complete' ?></button></form><?php endforeach;?><h3>Add a milestone</h3><form method="post" class="form-grid"><?= csrf_field() ?><input type="hidden" name="action" value="milestone"><input type="hidden" name="plan_id" value="<?= $id ?>"><label>Activity<input name="title" maxlength="250" required></label><label>Target date (optional)<input type="date" name="due_date"></label><button class="btn btn-primary">Add milestone</button></form></section></div><?php endif;?></main><?php page_end(); ?>
+<main id="main" class="wide page-space"><a href="dashboard.php" class="back-link">← Dashboard</a>
+<div class="page-intro"><span class="eyebrow muted-eyebrow">MAKE A PLAN</span><h1>My career roadmap</h1><p>Create achievable exploration steps and track your progress over time.</p></div>
+<?php if($error): ?><div class="alert error"><?= e($error) ?></div><?php endif; ?>
+<?php if($saved): ?><div class="alert success">Your roadmap has been updated.</div><?php endif; ?>
+<section class="panel"><h2>Create a plan from a recommendation</h2>
+<?php if(!$recs): ?><p>Complete your assessment first to choose a recommended career.</p><?php else: ?>
+<form method="post" class="form-grid"><?= csrf_field() ?><input type="hidden" name="action" value="create">
+<label>Career <select name="recommendation_id" required><option value="">Choose your career</option>
+<?php foreach($recs as $r): ?><option value="<?= (int)$r['id'] ?>" <?= (string)($_GET['career_id']??'')===(string)$r['id']?'selected':'' ?>><?= e($r['career_title']) ?></option><?php endforeach; ?>
+</select></label><button class="btn btn-primary">Create four-step roadmap</button></form><?php endif; ?>
+</section>
+<?php foreach($plans as $plan): ?>
+<section class="panel" style="margin-top:22px"><span class="eyebrow muted-eyebrow">CAREER PLAN</span>
+<h2><?= e($plan['career_title']) ?></h2><p><?= e($plan['goal']) ?></p>
+<?php $stmt=db()->prepare('SELECT id,title,due_date,completed_at FROM roadmap_milestones WHERE plan_id=? ORDER BY id');$stmt->execute([(int)$plan['id']]);$milestones=$stmt->fetchAll(); ?>
+<?php foreach($milestones as $m): ?><form method="post" class="match-row" style="align-items:center">
+<?= csrf_field() ?><input type="hidden" name="action" value="toggle"><input type="hidden" name="milestone_id" value="<?= (int)$m['id'] ?>">
+<span class="match-title"><strong><?= e($m['title']) ?></strong><small><?= $m['completed_at']?'Completed':'Not yet completed' ?></small></span>
+<button class="btn btn-outline" type="submit"><?= $m['completed_at']?'Mark incomplete':'Mark completed' ?></button></form><?php endforeach; ?>
+<p class="fine-print">This is a personal learning plan, not an admission or funding application.</p></section>
+<?php endforeach; ?>
+</main><?php page_end(); ?>

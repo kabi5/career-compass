@@ -1,6 +1,5 @@
 <?php
 require_once 'config/db.php';
-require_once 'config/guidance.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 if (!current_user()) { http_response_code(401); echo json_encode(['reply'=>'Please sign in again.']); exit; }
@@ -16,9 +15,6 @@ $uid=(int)$_SESSION['user_id'];
 $stmt=db()->prepare('SELECT top_interest FROM assessments WHERE user_id=? ORDER BY taken_at DESC,id DESC LIMIT 1');$stmt->execute([$uid]);$a=$stmt->fetch();
 $stmt=db()->prepare('SELECT subjects FROM learner_profiles WHERE user_id=?');$stmt->execute([$uid]);$p=$stmt->fetch();
 $payload=['message'=>trim($message),'context'=>['riasec_code'=>$a['top_interest']??'','subjects'=>array_values(array_filter(array_map('trim',explode(',',$p['subjects']??''))))]];
-$payload['programmes']=catalogue('programmes');
-$payload['institutions']=catalogue('institutions');
-$payload['scholarships']=catalogue('scholarships');
 $result=api_request('/chat',$payload,30);
 if (!$result || !isset($result['reply'])) { http_response_code(502); echo json_encode(['reply'=>'The assistant is unavailable right now. Please try again shortly.']); exit; }
-echo json_encode(['reply'=>(string)$result['reply'],'sources'=>$result['source_links']??$result['sources']??[]],JSON_UNESCAPED_UNICODE);
+echo json_encode(['reply'=>(string)$result['reply'],'sources'=>$result['sources']??[]],JSON_UNESCAPED_UNICODE);

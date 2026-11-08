@@ -1,0 +1,22 @@
+Career Compass submission prototype — build-time verification (2026-11-08)
+
+Automated Python tests:
+ - 17/17 Lesotho evidence and model-integration tests passed.
+ - 15/15 general recommendation and release-contract tests passed.
+ - Total: 32/32 Python unit checks passed.
+
+PHP syntax verification:
+ - 22/22 PHP files passed `php -l` (frontend, migration script, root entry point).
+
+Other checks:
+ - Python `compileall`: passed.
+ - Missing relative PHP navigation targets: none.
+ - No personal MySQL backup or .env secret file included in this release.
+
+Not verified here:
+ - End-to-end Apache + MariaDB browser workflow on the user's Windows system.
+ - Live Flask API runtime: Flask is not installed in the build container (the user's earlier /health and /recommend screenshots show the service working before these changes).
+ - Usability testing with real school learners; no user-study results asserted.
+ - Production security audit, public deployment, live funding or occupation demand data.
+
+See SUBMISSION_CHECKLIST.md for the mandatory local acceptance tests.

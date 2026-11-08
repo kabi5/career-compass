@@ -1,4 +1,3 @@
-
 """Private Flask service used by the PHP application, not a public-facing API."""
 import os
 from dotenv import load_dotenv
@@ -7,7 +6,7 @@ load_dotenv()
 from flask import Flask, request, jsonify
 from riasec import DIMENSIONS, score_responses, top_three_code, validate_responses
 from model import recommend, CAREERS, SCORE_VERSION, WEIGHTS, MIN_DISPLAY_COVERAGE
-from programmes import PROGRAMMES, programme_verified
+from programmes import PROGRAMMES, INSTITUTIONS, SCHOLARSHIPS, programme_verified
 from labour_evidence import load_evidence
 from chatbot import BOT
 import gemini_client
@@ -173,6 +172,22 @@ def programmes():
     return jsonify(count=len(items), programmes=items)
 
 
+@app.get("/scholarships")
+def scholarships():
+    """Public reference listings, NOT promises of open funding."""
+    items = []
+    for entry in SCHOLARSHIPS if isinstance(SCHOLARSHIPS, list) else []:
+        if isinstance(entry, dict):
+            items.append({**entry, "currently_open": False,
+                          "admission_or_award_guaranteed": False})
+    return jsonify(count=len(items), scholarships=items)
+
+
+@app.get("/institutions")
+def institutions():
+    return jsonify(count=len(INSTITUTIONS), institutions=INSTITUTIONS)
+
+
 @app.post("/chat")
 def chat():
     data = input_json()
@@ -188,6 +203,3 @@ def chat():
 if __name__ == "__main__":
     app.run(host=os.getenv("AI_HOST", "127.0.0.1"),
             port=int(os.getenv("AI_PORT", "5001")), debug=False)
-
-
-

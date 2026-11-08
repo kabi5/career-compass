@@ -50,30 +50,70 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = 'Your results could not be generated right now. Please try again when the recommendation service is available.';
             } else {
                 try {
-                    $pdo = db(); $pdo->beginTransaction();
-                    $ins = $pdo->prepare('INSERT INTO assessments (user_id,riasec_scores,top_interest) VALUES (?,?,?)');
-                    $ins->execute([$_SESSION['user_id'], json_encode($data['riasec_scores']), $data['top_code']]);
-                    $pdo->prepare('DELETE FROM recommendations WHERE user_id=?')->execute([$_SESSION['user_id']]);
+                    $pdo = db();
+                    $pdo->beginTransaction();
+
+                    // Append-only history: each assessment creates a new run. Never
+                    // delete old recommendations or their dependent details/feedback.
+                    $pdo->prepare('INSERT INTO assessments (user_id,riasec_scores,top_interest) VALUES (?,?,?)')
+                        ->execute([(int)$_SESSION['user_id'],
+                            json_encode($data['riasec_scores'], JSON_THROW_ON_ERROR), $data['top_code']]);
+                    $assessmentId = (int)$pdo->lastInsertId();
+                    $pdo->prepare('INSERT INTO assessment_responses (assessment_id,instrument_version,language_code,responses) VALUES (?,?,?,?)')
+                        ->execute([$assessmentId, 'cc-exploratory-24-v1', 'en',
+                            json_encode($responses, JSON_THROW_ON_ERROR)]);
+
+                    $profileSnapshot = [
+                        'subjects' => $subjectNames,
+                        'marks' => $marks,
+                        'qualification_type' => $profile['qualification_type'] ?? '',
+                        'qualification_year' => $profile['qualification_year'] ?? null,
+                        'subject_results' => $structured,
+                        'aspirations' => $profile['aspirations'] ?? '',
+                    ];
+                    $pdo->prepare('INSERT INTO profile_versions (user_id,payload) VALUES (?,?)')
+                        ->execute([(int)$_SESSION['user_id'],
+                            json_encode($profileSnapshot, JSON_THROW_ON_ERROR)]);
+                    $profileVersionId = (int)$pdo->lastInsertId();
+
+                    $version = (string)($data['score_version'] ?? 'unknown');
+                    $runPayload = [
+                        'score_version' => $version,
+                        'factor_weights' => $data['factor_weights'] ?? [],
+                        'methodology' => $data['methodology'] ?? '',
+                        'recommendations_count' => count($data['recommendations']),
+                    ];
+                    $pdo->prepare('INSERT INTO recommendation_runs
+                        (user_id,assessment_id,profile_version_id,method_version,payload)
+                        VALUES (?,?,?,?,?)')->execute([
+                            (int)$_SESSION['user_id'], $assessmentId, $profileVersionId,
+                            $version, json_encode($runPayload, JSON_THROW_ON_ERROR)
+                        ]);
+                    $runId = (int)$pdo->lastInsertId();
+
                     $rec = $pdo->prepare('INSERT INTO recommendations
                       (user_id,career_title,match_score,ranking_score,data_coverage,score_status,score_version,score_details,eligibility_status,explanation,recommended_subjects,pathway,holland_code,education_level,local_programmes)
                       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+                    $insertDetail = $pdo->prepare('INSERT INTO recommendation_details
+                        (recommendation_id,run_id,payload) VALUES (?,?,?)');
                     foreach ($data['recommendations'] as $r) {
-                        $details = [
-                            'components'=>$r['components'] ?? [], 'missing_factors'=>$r['missing_factors'] ?? [],
-                            'data_coverage'=>$r['data_coverage'] ?? 0, 'score_status'=>$r['score_status'] ?? 'exploratory',
-                            'eligibility_status'=>$r['eligibility_status'] ?? 'insufficient_information',
-                            'evidence'=>$r['evidence'] ?? [],
-                        ];
+                        if (!is_array($r) || empty($r['title']) || !is_string($r['title'])) {
+                            throw new UnexpectedValueException('Invalid career recommendation received');
+                        }
+                        $details = json_encode($r, JSON_THROW_ON_ERROR);
+                        $coverage = isset($r['data_coverage']) && is_numeric($r['data_coverage'])
+                            ? round(max(0, min(1, (float)$r['data_coverage'])) * 100, 2) : null;
                         $rec->execute([
-                            $_SESSION['user_id'], $r['title'], $r['match_score'] ?? null, $r['ranking_score'] ?? null,
-                            isset($r['data_coverage']) ? round((float)$r['data_coverage'] * 100, 2) : 0,
-                            $r['score_status'] ?? 'exploratory', $data['score_version'] ?? 'ls-v1.0',
-                            json_encode($details, JSON_THROW_ON_ERROR),
+                            (int)$_SESSION['user_id'], mb_substr($r['title'], 0, 200),
+                            $r['match_score'] ?? null, $r['ranking_score'] ?? null,
+                            $coverage, $r['score_status'] ?? 'exploratory',
+                            $version, $details,
                             $r['eligibility_status'] ?? 'insufficient_information',
                             $r['explanation'] ?? '', $r['recommended_subjects'] ?? '', $r['pathway'] ?? '',
                             $r['holland_code'] ?? null, $r['education_level'] ?? null,
                             json_encode($r['local_programmes'] ?? [], JSON_THROW_ON_ERROR),
                         ]);
+                        $insertDetail->execute([(int)$pdo->lastInsertId(), $runId, $details]);
                     }
                     $pdo->commit();
                     header('Location: dashboard.php?completed=1'); exit;

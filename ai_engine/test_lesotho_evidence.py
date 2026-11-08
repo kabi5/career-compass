@@ -84,15 +84,24 @@ class LabourTests(unittest.TestCase):
         self.assertIsNone(local_opportunity_score("17-2081.00"))
 
     def test_source_mapped_occupation_record_is_required(self):
-        fixture = {"occupation_specific_entries": [
+        fixture = {"country": "LS", "occupation_specific_entries": [
             {"soc_code": "17-2081.00", "occupation_classification": "SOC2018",
-             "verified": True, "reviewed_opportunity_index": 68.0,
+             "verified": True, "country_code": "LS", "reviewed_opportunity_index": 68.0,
              "source_url": "https://example.org/audit", "methodology": "Survey-to-index audit v1",
              "source_occupation_mapping": "Explicit SOC mapping", "reviewed_at": "2026-11-01"}
         ]}
         self.assertEqual(local_opportunity_evidence("17-2081.00", today=date(2026, 11, 8), catalogue=fixture)["score"], 68.0)
         self.assertIsNone(local_opportunity_score("17-2081.00", today=date(2029, 1, 1), catalogue=fixture))
         self.assertIsNone(local_opportunity_score("17-9999.00", today=date(2026, 11, 8), catalogue=fixture))
+
+    def test_foreign_labour_data_cannot_score_lesotho(self):
+        fixture = {"country": "ZA", "occupation_specific_entries": [
+            {"soc_code": "17-2081.00", "country_code": "ZA", "occupation_classification": "SOC2018",
+             "verified": True, "reviewed_opportunity_index": 99,
+             "source_url": "https://example.org/source", "methodology": "Test methodology",
+             "source_occupation_mapping": "Explicit mapping", "reviewed_at": "2026-11-01"}
+        ]}
+        self.assertIsNone(local_opportunity_score("17-2081.00", today=date(2026, 11, 8), catalogue=fixture))
 
 
 if __name__ == "__main__":

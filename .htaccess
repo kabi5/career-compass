@@ -1,10 +1,4 @@
-# XAMPP directory deployment: source, research artifacts and operational files are not web content.
 Options -Indexes
-<IfModule mod_rewrite.c>
-RewriteEngine On
-RewriteRule ^(?:ai_engine|database|scripts|tests|docs|deploy|dist)(?:/|$) - [F,L]
-RewriteRule ^(?:\.env(?:\..*)?|README\.md|docker-compose\.yml)$ - [F,L]
-</IfModule>
-<FilesMatch "^\.">
+<FilesMatch "^(\.|.*\.(sql|md|zip|log|env|bak))$">
 Require all denied
 </FilesMatch>

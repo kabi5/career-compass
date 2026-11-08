@@ -80,15 +80,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 english_mark=VALUES(english_mark),aspirations=VALUES(aspirations),
                 qualification_type=VALUES(qualification_type),qualification_year=VALUES(qualification_year),
                 subject_results=VALUES(subject_results)');
+            $pdo = db();
+            $pdo->beginTransaction();
             $statement->execute([$user['id'], $subjects, $marks['maths_mark'], $marks['science_mark'],
                 $marks['english_mark'], $aspirations, $qualification ?: null, $year,
                 json_encode($results, JSON_THROW_ON_ERROR)]);
+            // Preserve an academic-profile snapshot without changing any older assessments.
+            $snapshot = [
+                'subjects' => array_values(array_filter(array_map('trim', explode(',', $subjects)))),
+                'qualification_type' => $qualification,
+                'qualification_year' => $year,
+                'subject_results' => $results,
+                'marks' => ['maths' => $marks['maths_mark'],
+                    'science' => $marks['science_mark'], 'english' => $marks['english_mark']],
+                'aspirations' => $aspirations,
+            ];
+            $pdo->prepare('INSERT INTO profile_versions (user_id,payload) VALUES (?,?)')
+                ->execute([(int)$user['id'], json_encode($snapshot, JSON_THROW_ON_ERROR)]);
+            $pdo->commit();
             $saved = true;
             $stmt->execute([$user['id']]);
             $p = $stmt->fetch() ?: [];
         } catch (InvalidArgumentException $exception) {
+            if (db()->inTransaction()) db()->rollBack();
             $error = $exception->getMessage();
         } catch (Throwable $exception) {
+            if (db()->inTransaction()) db()->rollBack();
             error_log('Could not save academic profile: ' . $exception->getMessage());
             $error = 'Your academic profile could not be saved. Please try again.';
         }

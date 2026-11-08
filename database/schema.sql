@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS learner_profiles (
  user_id INT UNSIGNED NOT NULL PRIMARY KEY,
  subjects TEXT, maths_mark DECIMAL(5,2), science_mark DECIMAL(5,2),
  english_mark DECIMAL(5,2), other_marks TEXT, aspirations TEXT,
- qualification_type VARCHAR(10) DEFAULT NULL,
+ qualification_type VARCHAR(20) DEFAULT NULL,
  qualification_year SMALLINT UNSIGNED DEFAULT NULL,
  subject_results LONGTEXT DEFAULT NULL,
  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -37,20 +37,20 @@ CREATE TABLE IF NOT EXISTS assessments (
 CREATE TABLE IF NOT EXISTS recommendations (
  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
  user_id INT UNSIGNED NOT NULL,
- career_title VARCHAR(150) NOT NULL,
+ career_title VARCHAR(200) NOT NULL,
  -- NULL means the evidence is insufficient for a defensible overall percentage.
  match_score DECIMAL(5,2) DEFAULT NULL,
  ranking_score DECIMAL(5,2) DEFAULT NULL,
- data_coverage DECIMAL(5,2) NOT NULL DEFAULT 0.00,
- score_status VARCHAR(30) NOT NULL DEFAULT 'legacy',
- score_version VARCHAR(40) NOT NULL DEFAULT 'legacy',
+ data_coverage DECIMAL(5,2) DEFAULT NULL,
+ score_status VARCHAR(30) DEFAULT NULL,
+ score_version VARCHAR(40) DEFAULT NULL,
  score_details LONGTEXT DEFAULT NULL,
- eligibility_status VARCHAR(40) NOT NULL DEFAULT 'insufficient_information',
+ eligibility_status VARCHAR(50) DEFAULT NULL,
  explanation TEXT,
  recommended_subjects TEXT,
  pathway TEXT,
  holland_code VARCHAR(10) DEFAULT NULL,
- education_level VARCHAR(150) DEFAULT NULL,
+ education_level TEXT DEFAULT NULL,
  local_programmes LONGTEXT DEFAULT NULL,
  generated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
  INDEX idx_recommendation_user_score (user_id,match_score),
@@ -99,3 +99,77 @@ INSERT IGNORE INTO assessment_questions (id,question,riasec_dimension,weight) VA
 (22,'I like following a clear plan or process.','C',1),
 (23,'I enjoy checking details for mistakes.','C',1),
 (24,'I would enjoy organising information in tables or files.','C',1);
+
+-- Additional functional modules: run history, evidence, roadmaps.
+-- Career Compass additional prototype features.
+-- New database: run AFTER schema.sql. Existing database: use scripts/migrate.php.
+-- Do not drop tables or erase any learner data.
+
+CREATE TABLE IF NOT EXISTS assessment_responses (
+  assessment_id INT UNSIGNED NOT NULL PRIMARY KEY,
+  instrument_version VARCHAR(80) NOT NULL,
+  language_code VARCHAR(5) NOT NULL DEFAULT 'en',
+  responses LONGTEXT NOT NULL,
+  CONSTRAINT fk_cc_responses_assessment FOREIGN KEY (assessment_id)
+    REFERENCES assessments(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS profile_versions (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  user_id INT UNSIGNED NOT NULL,
+  payload LONGTEXT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_cc_profile_versions_user (user_id, id),
+  CONSTRAINT fk_cc_profile_versions_user FOREIGN KEY (user_id)
+    REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS recommendation_runs (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  user_id INT UNSIGNED NOT NULL,
+  assessment_id INT UNSIGNED NOT NULL,
+  profile_version_id INT UNSIGNED NOT NULL,
+  method_version VARCHAR(80) NOT NULL,
+  payload LONGTEXT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_cc_runs_user (user_id, id),
+  CONSTRAINT fk_cc_runs_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  CONSTRAINT fk_cc_runs_assessment FOREIGN KEY (assessment_id) REFERENCES assessments(id) ON DELETE CASCADE,
+  CONSTRAINT fk_cc_runs_profile FOREIGN KEY (profile_version_id) REFERENCES profile_versions(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS recommendation_details (
+  recommendation_id INT UNSIGNED NOT NULL,
+  run_id INT UNSIGNED NOT NULL,
+  payload LONGTEXT NOT NULL,
+  PRIMARY KEY (recommendation_id,run_id),
+  INDEX idx_cc_details_run (run_id),
+  CONSTRAINT fk_cc_details_recommendation FOREIGN KEY (recommendation_id)
+    REFERENCES recommendations(id) ON DELETE CASCADE,
+  CONSTRAINT fk_cc_details_run FOREIGN KEY (run_id)
+    REFERENCES recommendation_runs(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS career_plans (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  user_id INT UNSIGNED NOT NULL,
+  career_title VARCHAR(200) NOT NULL,
+  goal TEXT NOT NULL,
+  roadmap LONGTEXT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_cc_plans_user (user_id,id),
+  CONSTRAINT fk_cc_plans_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS roadmap_milestones (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  plan_id INT UNSIGNED NOT NULL,
+  title VARCHAR(250) NOT NULL,
+  due_date DATE DEFAULT NULL,
+  completed_at DATETIME DEFAULT NULL,
+  INDEX idx_cc_milestones_plan (plan_id),
+  CONSTRAINT fk_cc_milestones_plan FOREIGN KEY (plan_id)
+    REFERENCES career_plans(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+

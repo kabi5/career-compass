@@ -1,4 +1,3 @@
-
 """Regression tests for score v1.1 using reviewed Lesotho pathway records."""
 import unittest
 from unittest.mock import patch
@@ -83,6 +82,3 @@ class ModelIntegrationTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
-
-

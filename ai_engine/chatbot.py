@@ -1,206 +1,229 @@
-"""Local source-linked retrieval. No prompt or profile goes to external AI."""
+"""Career chatbot: TF-IDF retrieval over careers/programmes/FAQ, optionally
+rewritten into a natural reply by the free-tier Gemini API. Falls back to the
+plain retrieval answer if Gemini is not configured or unavailable."""
+import json
+import os
 import re
-from datetime import date
-from urllib.parse import urlparse
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+
 from model import CAREERS, EDUCATION, _infer_subjects
-from programmes import PROGRAMMES, INSTITUTIONS, SCHOLARSHIPS, canon
-from eligibility import scholarship_status
+from programmes import PROGRAMMES, programmes_for_career
+import gemini_client
+
+BASE_DIR = os.path.dirname(__file__)
+FAQ_P = os.path.join(BASE_DIR, "data", "faq.json")
 
 RIASEC_INFO = {
-    'R': ('Realistic', 'Practical activities involving tools, objects, animals or outdoor work.'),
-    'I': ('Investigative', 'Analysing, researching and solving problems.'),
-    'A': ('Artistic', 'Creative and expressive activities such as design, writing or performance.'),
-    'S': ('Social', 'Helping, teaching, listening and supporting people.'),
-    'E': ('Enterprising', 'Leading, persuading and developing ideas with other people.'),
-    'C': ('Conventional', 'Organising information and attending to detail.'),
+    "R": ("Realistic", "You like practical, hands-on work with tools, machines, animals or the outdoors."),
+    "I": ("Investigative", "You like analysing, researching and solving complex problems."),
+    "A": ("Artistic", "You like creative, expressive work such as design, writing or performance."),
+    "S": ("Social", "You like helping, teaching, advising and caring for people."),
+    "E": ("Enterprising", "You like leading, persuading, selling and running things."),
+    "C": ("Conventional", "You like organised, detail-focused work with data, records and procedures."),
 }
+
 UNIVERSITY_ALIASES = {
-    'nul': 'National University of Lesotho', 'national university': 'National University of Lesotho',
-    'botho': 'Botho University Lesotho',
-    'limkokwing': 'Limkokwing University of Creative Technology (Lesotho)',
-    'lerotholi': 'Lerotholi Polytechnic', 'polytechnic': 'Lerotholi Polytechnic',
-    'lce': 'Lesotho College of Education', 'college of education': 'Lesotho College of Education',
-    'agricultural college': 'Lesotho Agricultural College',
+    "nul": "National University of Lesotho",
+    "national university": "National University of Lesotho",
+    "botho": "Botho University Lesotho",
+    "limkokwing": "Limkokwing University of Creative Technology (Lesotho)",
+    "lerotholi": "Lerotholi Polytechnic",
+    "polytechnic": "Lerotholi Polytechnic",
+    "lce": "Lesotho College of Education",
+    "college of education": "Lesotho College of Education",
+    "agricultural college": "Lesotho Agricultural College",
 }
-DISCLAIMER = ('Reference facts have limited verification scopes. Confirm current details with the '
-              'institution/provider; these are not admission or funding decisions.')
-FALLBACK = ('I do not have verified information to answer that. Try a specific career, institution '
-            'or funding provider, or ask a teacher to help check an official source.')
+
+GREETINGS = ("hi", "hello", "hey", "good morning", "good afternoon", "good evening")
+THANKS = ("thanks", "thank you", "cheers")
+
+FALLBACK = ("I'm not sure I have a good answer to that. I can help with career options, "
+            "school subjects, qualifications, and programmes at Lesotho institutions. "
+            "Try asking, for example: \"What can I study to become a nurse?\" or "
+            "\"What does Botho University offer?\"")
+
+SYSTEM_INSTRUCTIONS = """You are the Career Compass assistant, a friendly, concise career guidance
+helper for high school learners in Lesotho.
+
+Rules:
+- Only state facts about specific careers, university/college programmes, subjects, admission
+  requirements, or institutions in Lesotho if they appear in the CONTEXT below. Never invent
+  programme names, universities, admission requirements, fees, or statistics that are not in the
+  context.
+- If the context does not contain the answer, say so plainly and suggest the learner ask a
+  teacher, career counsellor, or check the institution's current prospectus.
+- General career advice, encouragement, and explanations of concepts (like RIASEC, what a job
+  involves, how to think about subject choices) do not need to come from the context.
+- Keep answers to about 120 words, in plain, encouraging language suited to a teenager.
+- Do not use markdown headers or bullet-heavy formatting; write in short plain paragraphs.
+- Remind the learner, when relevant, that this is guidance, not a final decision."""
 
 
-def _text(value):
-    return value if isinstance(value, str) else ''
-
-
-def _texts(value):
-    return [v for v in value if isinstance(v, str)] if isinstance(value, list) else []
-
-
-def _approved(item):
-    if not isinstance(item, dict) or item.get('verification_status') != 'verified':
-        return False
-    url = item.get('source_url') or item.get('official_url')
-    if not isinstance(url, str) or not isinstance(item.get('last_verified'), str):
-        return False
+def _load_faq():
     try:
-        parsed = urlparse(url)
-        date.fromisoformat(item['last_verified'])
-        return parsed.scheme == 'https' and bool(parsed.hostname) and not parsed.username
-    except ValueError:
-        return False
+        with open(FAQ_P, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return []
 
 
-def _source(item):
-    return {'title': _text(item.get('programme') or item.get('title') or item.get('name')) or 'Official source',
-            'url': item.get('source_url') or item.get('official_url'),
-            'verification_scope': _text(item.get('verification_scope')), 'last_verified': item.get('last_verified')}
+def _programme_text(p):
+    flag = "" if p.get("verified") else " (please confirm against the current prospectus)"
+    subj = ", ".join(p.get("required_subjects", [])) or "see prospectus"
+    dur = f", {p['duration_years']} years" if p.get("duration_years") else ""
+    return (f"{p['programme']} - {p['university']} ({p.get('level', '')}{dur}). "
+            f"Subjects: {subj}. {p.get('entry_requirements', '')}{flag}")
 
 
-def _result(reply, sources=None):
-    distinct = {(s['title'], s['url']): s for s in sources or [] if s and s.get('url')}
-    links = list(distinct.values())
-    return {'reply': reply, 'sources': links, 'source_links': links, 'engine': 'local-retrieval'}
+def _career_answer(career):
+    soc = career.get("soc_code", "")
+    edu = EDUCATION.get("by_occupation", {}).get(soc, {})
+    level = edu.get("most_common_label", "not specified").split(" - ")[0]
+    progs = programmes_for_career(career["title"], limit=3)
 
-
-def _programme_text(item):
-    duration = item.get('duration_years')
-    duration_text = f' Published duration: {duration} years.' if type(duration) in (int, float) and duration > 0 else ' Duration not verified.'
-    return (_text(item.get('programme')) + ' — ' + _text(item.get('university')) + '.' + duration_text + ' '
-            + (_text(item.get('entry_requirements')) or 'Entry requirements not verified.')
-            + ' Verification scope: ' + (_text(item.get('verification_scope')) or 'See the linked source.')
-            + ' Confirm current accreditation and intake separately.')
-
-
-def _funding_text(item):
-    status = scholarship_status(item)
-    label = {'closed': 'closed', 'open': 'within the published application dates',
-             'upcoming': 'not yet within the published application dates', 'unknown': 'dates or current availability unconfirmed'}[status]
-    return (_text(item.get('title')) + ' — ' + _text(item.get('provider')) + '. Status: ' + label + '. '
-            + _text(item.get('eligibility')) + ' ' + _text(item.get('verification_scope')))
-
-
-# Reviewed editorial explanations replace unsupported assertions in the legacy FAQ.
-FAQ = [
-    ('What is RIASEC Holland code interest types',
-     'RIASEC describes Realistic, Investigative, Artistic, Social, Enterprising and Conventional interests. '
-     'Your highest letters help explore activities. The 24-question Career Compass form is exploratory, '
-     'not a validated psychometric assessment; a high score is not a percentile or proof of ability.'),
-    ('How choose subjects school study qualifications preparation',
-     'Check the official subject requirements of programmes that interest you, then use the eligibility '
-     'and what-if tools. Discuss changes with a teacher; career subject suggestions are exploratory, not admission rules.'),
-    ('Undecided unsure career choose compare alternatives',
-     'Explore several options and compare up to three careers. Consider activities you enjoy and practical constraints. '
-     'Try a small project or talk with a counsellor. You can revise your profile and recalculate without retaking the assessment.'),
-    ('Recommendations accuracy trust how score calculated',
-     'The engine uses weighted matching of interests and available profile information. Missing components are excluded '
-     'and weights adjusted. It is not trained machine learning, an admission decision or a career-success prediction. '
-     'Read each score breakdown and disagree when a suggestion does not fit.'),
-    ('Careers demand employment job salary labour market',
-     'No verified local occupation-level employment-demand or salary evidence is available in this catalogue. '
-     'A high match does not mean jobs are available. Ask a counsellor for current official labour-market sources.'),
-    ('Difference certificate diploma degree qualification',
-     'Levels, duration and progression vary by programme. Use the official programme source and confirm recognition '
-     'with the Council on Higher Education. Unverified duration or requirements remain unknown.'),
-    ('Save plan roadmap progress milestones skills',
-     'Choose a career goal, record preparation activities and milestones, and review progress with a counsellor. '
-     'Suggested targets support planning; they do not guarantee entry.'),
-]
+    lines = [f"{career['title']}: Holland code {career.get('riasec_code', '?')}.",
+             f"Typical education (US data): {level}.",
+             f"Useful subjects: {_infer_subjects(career)}."]
+    if progs:
+        lines.append("Where to study in Lesotho: "
+                     + "; ".join(f"{p['programme']} at {p['university']}" for p in progs) + ".")
+    else:
+        lines.append("No matching local programme is listed yet; ask a career counsellor "
+                     "about related fields.")
+    return "\n".join(lines)
 
 
 class CareerBot:
-    def __init__(self, programmes=None, institutions=None, scholarships=None):
-        self.programmes = [p for p in (PROGRAMMES if programmes is None else programmes) if _approved(p)]
-        self.institutions = [p for p in (INSTITUTIONS if institutions is None else institutions) if _approved(p)]
-        self.scholarships = [p for p in (SCHOLARSHIPS if scholarships is None else scholarships) if _approved(p)]
-        self.docs = [{'kind': 'faq', 'title': q, 'text': q, 'answer': a, 'sources': []} for q, a in FAQ]
-        for p in self.programmes:
-            title = _text(p.get('programme'))
-            self.docs.append({'kind': 'programme', 'title': title,
-                'text': ' '.join([title, _text(p.get('university')), *_texts(p.get('related_careers'))]),
-                'answer': _programme_text(p), 'sources': [_source(p)]})
-        for p in self.institutions:
-            title = _text(p.get('name'))
-            self.docs.append({'kind': 'institution', 'title': title, 'text': title,
-                'answer': title + ': ' + _text(p.get('verification_scope')), 'sources': [_source(p)]})
-        for p in self.scholarships:
-            title = _text(p.get('title'))
-            self.docs.append({'kind': 'funding', 'title': title,
-                'text': ' '.join([title, _text(p.get('provider')), *_texts(p.get('fields'))]),
-                'item': p, 'sources': [_source(p)]})
-        for career in CAREERS:
-            self.docs.append({'kind': 'career', 'title': career['title'], 'text': career['title'], 'career': career})
-        self.vectorizer = TfidfVectorizer(stop_words='english', ngram_range=(1, 2), sublinear_tf=True)
-        self.matrix = self.vectorizer.fit_transform([d['text'] for d in self.docs])
+    def __init__(self):
+        self.docs = []
 
-    def _career_answer(self, career):
-        education = EDUCATION.get('by_occupation', {}).get(career.get('soc_code'), {})
-        lines = [career['title'] + ': reference interest code ' + career.get('riasec_code', ''),
-                 'Typical education in international reference data: ' + education.get('most_common_label', 'not specified') + '.',
-                 'Exploratory subject suggestions: ' + _infer_subjects(career) + '. These are not entry requirements.']
-        title = canon(career['title']).rstrip('s')
-        related = [p for p in self.programmes if any(canon(t).rstrip('s') in title for t in _texts(p.get('related_careers')))]
-        sources = []
-        soc = career.get('soc_code', '')
-        if re.fullmatch(r'\d{2}-\d{4}\.\d{2}', soc):
-            sources.append({'title': career['title'] + ' — international occupational reference',
-                'url': 'https://www.onetonline.org/link/summary/' + soc,
-                'verification_scope': 'Legacy international reference data; original release version unresolved.', 'last_verified': None})
-        if related:
-            lines.append('Possible programmes to investigate: ' + '; '.join(
-                p['programme'] + ' at ' + p['university'] for p in related[:3]) + '.')
-            lines.append('Programme identity does not establish current accreditation, eligibility or intake availability.')
-            sources.extend(_source(p) for p in related[:3])
-        else:
-            lines.append('No verified related local programme is in this catalogue; this does not mean none exists.')
-        return '\n'.join(lines), sources
+        for item in _load_faq():
+            self.docs.append({"kind": "faq", "title": item["question"],
+                              "text": item["question"], "answer": item["answer"]})
+
+        for p in PROGRAMMES:
+            text = " ".join([p["programme"], p["university"], p.get("faculty", ""),
+                             p.get("description", ""), " ".join(p.get("related_careers", []))])
+            self.docs.append({"kind": "programme", "title": p["programme"], "text": text,
+                              "answer": _programme_text(p), "university": p["university"]})
+
+        for c in CAREERS:
+            self.docs.append({"kind": "career", "title": c["title"],
+                              "text": c["title"] + " " + c["title"],
+                              "answer": None, "career": c})
+
+        self.vectorizer = TfidfVectorizer(stop_words="english", ngram_range=(1, 2),
+                                          sublinear_tf=True)
+        self.matrix = self.vectorizer.fit_transform([d["text"] for d in self.docs])
+
+    # ---- helpers ---------------------------------------------------------
+    def _detect_university(self, msg):
+        for alias, full in UNIVERSITY_ALIASES.items():
+            if re.search(r"\b" + re.escape(alias) + r"\b", msg):
+                return full
+        return None
 
     def _answer_for(self, doc):
-        if doc['kind'] == 'career':
-            return self._career_answer(doc['career'])
-        if doc['kind'] == 'funding':
-            return _funding_text(doc['item']), doc['sources']
-        return doc['answer'], doc.get('sources', [])
+        if doc["kind"] == "career":
+            return _career_answer(doc["career"])
+        return doc["answer"]
 
+    def _ranked_docs(self, msg, uni=None, top_k=4):
+        q = self.vectorizer.transform([msg])
+        sims = cosine_similarity(q, self.matrix)[0]
+        if uni:
+            for i, d in enumerate(self.docs):
+                if d.get("university") == uni:
+                    sims[i] *= 1.5
+        ranked = sims.argsort()[::-1][:top_k]
+        return [(self.docs[i], float(sims[i])) for i in ranked]
+
+    def _build_context(self, ranked_docs, riasec_code=None, subjects=None):
+        blocks = []
+        if riasec_code:
+            names = [RIASEC_INFO[c][0] for c in riasec_code if c in RIASEC_INFO]
+            blocks.append(f"Learner's Holland code: {riasec_code} ({', '.join(names)}).")
+        if subjects:
+            blocks.append(f"Learner's current subjects: {', '.join(subjects)}.")
+        for d, score in ranked_docs:
+            if score < 0.08:
+                continue
+            blocks.append(self._answer_for(d))
+        return "\n\n".join(blocks) if blocks else "No matching information found in the knowledge base."
+
+    # ---- main entry point ------------------------------------------------
     def reply(self, message, context=None):
-        message = _text(message).strip()
-        msg = message.lower()
         context = context or {}
-        if not message:
-            return _result('Please type a question.')
-        if msg in ('hi', 'hello', 'hey', 'good morning', 'good afternoon', 'good evening'):
-            return _result('Hello! Ask about careers, interests, subjects, official programme references or funding.')
-        if msg in ('thanks', 'thank you', 'cheers'):
-            return _result("You're welcome. You can keep exploring or discuss your next step with a counsellor.")
-        code = _text(context.get('riasec_code'))
-        if code and re.search(r'\b(my|me)\b.*\b(result|code|profile|interest|type)s?\b', msg):
-            parts = ['Your exploratory interest code is ' + code + '.']
-            parts.extend(c + ' — ' + RIASEC_INFO[c][0] + ': ' + RIASEC_INFO[c][1] for c in code if c in RIASEC_INFO)
-            parts.append('These are interests, not fixed abilities or a validated prediction of your future.')
-            return _result('\n'.join(parts))
-        if re.search(r'\b(scholarship|scholarships|bursary|bursaries|funding|nmds|sponsorship)\b', msg):
-            matches = self.scholarships
-            provider = next((t for t in ('nmds', 'botho', 'capernaum', 'higherlife') if t in msg), None)
-            if provider:
-                matches = [s for s in matches if provider in (_text(s.get('title')) + ' ' + _text(s.get('provider'))).lower()]
-            if not matches:
-                return _result('No verified funding information matching that provider is available. Check official announcements.')
-            return _result('\n\n'.join(_funding_text(s) for s in matches[:3]) + '\n\n' + DISCLAIMER, [_source(s) for s in matches[:3]])
-        university = next((name for alias, name in UNIVERSITY_ALIASES.items()
-                           if re.search(r'\b' + re.escape(alias) + r'\b', msg)), None)
-        if university and re.search(r'offer|programme|program|course|study|faculty|qualification|requirement|admission', msg):
-            matches = [p for p in self.programmes if p.get('university') == university]
-            if matches:
-                return _result('\n\n'.join(_programme_text(p) for p in matches[:4]) + '\n\n' + DISCLAIMER, [_source(p) for p in matches[:4]])
-            return _result('No verified programme details for that institution are available. Consult its official prospectus.')
-        similarities = cosine_similarity(self.vectorizer.transform([message]), self.matrix)[0]
-        index = int(similarities.argmax())
-        if float(similarities[index]) < .12:
-            return _result(FALLBACK)
-        answer, sources = self._answer_for(self.docs[index])
-        return _result(answer + '\n\n' + DISCLAIMER, sources)
+        raw_msg = (message or "").strip()
+        msg = raw_msg.lower()
+        if not msg:
+            return {"reply": "Please type a question.", "sources": [], "engine": "none"}
+
+        if msg in GREETINGS or any(msg.startswith(g + " ") for g in GREETINGS):
+            return {"reply": "Hello! I'm the Career Compass assistant. Ask me about careers, "
+                             "subjects, qualifications or programmes at Lesotho institutions.",
+                    "sources": [], "engine": "canned"}
+        if any(t in msg for t in THANKS):
+            return {"reply": "You're welcome! Ask me anything else about your future.",
+                    "sources": [], "engine": "canned"}
+
+        code = context.get("riasec_code") or ""
+        subjects = context.get("subjects") or []
+        uni = self._detect_university(msg)
+
+        ranked = self._ranked_docs(msg, uni=uni, top_k=4)
+        best_score = ranked[0][1] if ranked else 0.0
+
+        # Build retrieval context regardless of whether Gemini is used
+        riasec_wanted = bool(code) and re.search(r"\b(my|me)\b.*\b(result|code|profile|interest|type)s?\b", msg)
+        context_text = self._build_context(
+            ranked, riasec_code=code if riasec_wanted else None, subjects=subjects
+        )
+        sources = [d["title"] for d, s in ranked if s >= 0.08][:3]
+
+        # Try Gemini first (it only answers from context_text + its own general knowledge
+        # of career guidance concepts, per SYSTEM_INSTRUCTIONS)
+        if gemini_client.is_configured():
+            prompt = (f"{SYSTEM_INSTRUCTIONS}\n\nCONTEXT:\n{context_text}\n\n"
+                     f"Learner's question: {raw_msg}")
+            gemini_reply = gemini_client.generate(prompt)
+            if gemini_reply:
+                return {"reply": gemini_reply, "sources": sources, "engine": "gemini"}
+            # fall through to offline retrieval on any Gemini failure
+
+        # ---- Offline fallback (same behaviour as before) ----
+        if code and riasec_wanted:
+            parts = [f"Your Holland code is {code}."]
+            for ch in code:
+                if ch in RIASEC_INFO:
+                    name, desc = RIASEC_INFO[ch]
+                    parts.append(f"{ch} - {name}: {desc}")
+            parts.append("See your dashboard for the careers matched to this profile.")
+            return {"reply": "\n".join(parts), "sources": ["Your assessment"], "engine": "offline"}
+
+        if uni and re.search(r"offer|programme|program|course|study|faculty|qualification", msg):
+            progs = [p for p in PROGRAMMES if p["university"] == uni]
+            if progs:
+                lines = [f"Programmes listed for {uni}:"]
+                lines += ["- " + _programme_text(p) for p in progs]
+                return {"reply": "\n".join(lines), "sources": [uni], "engine": "offline"}
+
+        if best_score < 0.12:
+            return {"reply": FALLBACK, "sources": [], "engine": "offline"}
+
+        top_doc, _ = ranked[0]
+        reply_text = self._answer_for(top_doc)
+        srcs = [top_doc["title"]]
+        for d, s in ranked[1:]:
+            if s >= 0.2 and d["kind"] == "programme" and top_doc["kind"] != "programme":
+                reply_text += "\n\nRelated programme: " + d["answer"]
+                srcs.append(d["title"])
+                break
+
+        reply_text += "\n\n(This is guidance only. Please confirm details with a teacher or the institution.)"
+        return {"reply": reply_text, "sources": srcs, "engine": "offline"}
 
 
 BOT = CareerBot()
-

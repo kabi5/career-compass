@@ -7,13 +7,27 @@ $stmt = db()->prepare('SELECT * FROM assessments WHERE user_id=? ORDER BY taken_
 $stmt->execute([$user['id']]);
 $assessment = $stmt->fetch();
 
-// Retain the existing recommendation-run and recommendation-details workflow.
-$stmt = db()->prepare('SELECT r.*, d.payload AS scoring_payload FROM recommendations r JOIN recommendation_details d ON d.recommendation_id=r.id WHERE r.user_id=? AND d.run_id=(SELECT MAX(id) FROM recommendation_runs WHERE user_id=?) ORDER BY r.match_score DESC,r.id DESC LIMIT 5');
-$stmt->execute([$user['id'], $user['id']]);
-$recs = $stmt->fetchAll();
-if (!$recs) {
-    $stmt = db()->prepare('SELECT r.*, NULL AS scoring_payload FROM recommendations r WHERE r.user_id=? ORDER BY r.generated_at DESC,r.id DESC LIMIT 5');
-    $stmt->execute([$user['id']]);
+// Use this user's latest assessment run, never stale recommendations from
+// a different assessment. Coverage is stored as a percentage (0–100).
+$stmt = db()->prepare('SELECT id FROM recommendation_runs WHERE user_id=? ORDER BY id DESC LIMIT 1');
+$stmt->execute([(int)$user['id']]);
+$latestRunId = $stmt->fetchColumn();
+$recs = [];
+if ($latestRunId) {
+    $stmt = db()->prepare('SELECT r.*, d.payload AS scoring_payload
+        FROM recommendation_details d
+        JOIN recommendations r ON r.id=d.recommendation_id
+        WHERE d.run_id=? AND r.user_id=?
+        ORDER BY COALESCE(r.data_coverage,0) DESC,
+                 COALESCE(r.ranking_score,r.match_score,-1) DESC, r.id DESC
+        LIMIT 5');
+    $stmt->execute([(int)$latestRunId, (int)$user['id']]);
+    $recs = $stmt->fetchAll();
+} else {
+    // Older installations may have recommendations without run records.
+    $stmt = db()->prepare('SELECT r.*, NULL AS scoring_payload FROM recommendations r
+        WHERE r.user_id=? ORDER BY r.generated_at DESC,r.id DESC LIMIT 5');
+    $stmt->execute([(int)$user['id']]);
     $recs = $stmt->fetchAll();
 }
 
@@ -63,28 +77,29 @@ page_start('Your dashboard', 'dashboard');
         <div class="matches-list">
           <?php foreach ($recs as $i=>$rec): ?>
             <?php
-              $evidence = json_decode((string)($rec['scoring_payload'] ?? ''), true);
+              $evidence = json_decode((string)($rec['scoring_payload'] ?: ($rec['score_details'] ?? '')), true);
               $evidence = is_array($evidence) ? $evidence : [];
               $score = $rec['match_score'] ?? null;
+              $ranking = $rec['ranking_score'] ?? ($evidence['ranking_score'] ?? null);
+              $status = (string)($rec['score_status'] ?? ($evidence['score_status'] ?? 'exploratory'));
               $hasScore = is_numeric($score) && (float)$score >= 0 && (float)$score <= 100;
-              $ranking = $evidence['ranking_score'] ?? null;
               $hasRanking = is_numeric($ranking) && (float)$ranking >= 0 && (float)$ranking <= 100;
-              $coverage = $evidence['data_coverage'] ?? null;
-              $hasCoverage = is_numeric($coverage) && (float)$coverage >= 0 && (float)$coverage <= 1;
-              $coverageLabel = $hasCoverage ? round((float)$coverage * 100).'%' : 'unknown';
-              if ($hasScore) {
+              $coverage = $rec['data_coverage'] ?? null;
+              if (!is_numeric($coverage) && isset($evidence['data_coverage'])) {
+                  $coverage = (float)$evidence['data_coverage'] * 100;
+              }
+              $coverageLabel = is_numeric($coverage) ? round((float)$coverage).'%' : 'unknown';
+              if ($hasScore && $status === 'complete') {
                   $scoreLabel = number_format((float)$score, 1).'%';
-                  $scoreNote = 'Approximate five-factor match';
-                  $scoreTitle = 'Overall score supported by sufficient scoring evidence; not a prediction of admission or employment.';
-              } elseif ($hasRanking) {
-                  $scoreLabel = number_format((float)$ranking, 1).'%';
-                  $scoreNote = 'Preliminary alignment · '.$coverageLabel.' evidence · Exploratory';
-                  $scoreTitle = 'Preliminary ranking using available factors only. This is NOT a verified overall career match.';
+                  $scoreNote = 'Five-factor alignment · '.$coverageLabel.' evidence';
+              } elseif ($hasScore || $hasRanking) {
+                  $scoreLabel = number_format((float)($hasScore ? $score : $ranking), 1).'%';
+                  $scoreNote = 'Provisional alignment · '.$coverageLabel.' evidence · '.ucfirst($status);
               } else {
                   $scoreLabel = 'Exploratory';
-                  $scoreNote = 'Not enough evidence for a percentage';
-                  $scoreTitle = 'Insufficient verified evidence for an overall match percentage.';
+                  $scoreNote = 'Not enough evidence for a reliable percentage';
               }
+              $scoreTitle = 'Educational exploration only; admission and employment outcomes are not predicted.';
             ?>
             <a class="match-row" href="career-detail.php?id=<?= (int)$rec['id'] ?>">
               <span class="match-count"><?= sprintf('%02d',$i+1) ?></span>
@@ -94,7 +109,7 @@ page_start('Your dashboard', 'dashboard');
             </a>
           <?php endforeach; ?>
         </div>
-        <p class="fine-print">Preliminary alignment ranks careers using the available scoring factors, and is not the complete five-factor match. Evidence coverage shows how much of the algorithm was supported by usable information. These estimates do not guarantee admission or employment.</p>
+        <p class="fine-print">Scores are preliminary unless all five factors have valid evidence. Evidence coverage is the weighted share of usable information, not an employment probability. Admission is never guaranteed.</p><p class="fine-print"><a href="history.php">View previous assessments and recommendation runs →</a></p>
       <?php else: ?>
         <div class="empty-state"><div class="empty-icon">✧</div><h3>Possibilities await</h3><p>Your career suggestions will appear here after you complete the assessment.</p><a href="assessment.php" class="text-link">Discover matches ↗</a></div>
       <?php endif; ?>

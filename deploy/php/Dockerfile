@@ -6,8 +6,4 @@ RUN a2enmod headers rewrite
 COPY frontend/ /var/www/html/
 COPY scripts/ /var/www/scripts/
 COPY database/ /var/www/database/
-COPY ai_engine/data/ /var/www/ai_engine/data/
-COPY deploy/php/start.sh /usr/local/bin/career-start
-RUN chmod +x /usr/local/bin/career-start
 RUN chown -R www-data:www-data /var/www/html
-CMD ["career-start"]

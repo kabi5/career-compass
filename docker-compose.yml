@@ -24,7 +24,6 @@ services:
       APP_ENV: production
       INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN:?Set INTERNAL_API_TOKEN in .env}
       ENABLE_GEMINI: 'false'
-      RECOMMENDATION_WEIGHTS: ${RECOMMENDATION_WEIGHTS:-{}}
     expose:
       - '5001'
     healthcheck:
@@ -47,13 +46,6 @@ services:
       INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN:?Set INTERNAL_API_TOKEN in .env}
       APP_ENV: production
       APP_FORCE_HTTPS: ${APP_FORCE_HTTPS:-0}
-      APP_URL: ${APP_URL:-http://localhost:8080}
-      MAIL_ENABLED: ${MAIL_ENABLED:-0}
-      MAIL_FROM: ${MAIL_FROM:-}
-      REQUIRE_EMAIL_VERIFICATION: ${REQUIRE_EMAIL_VERIFICATION:-0}
-      COUNSELLING_RETENTION_DAYS: ${COUNSELLING_RETENTION_DAYS:-365}
-      AUDIT_RETENTION_DAYS: ${AUDIT_RETENTION_DAYS:-365}
-      SUPPORT_EMAIL: ${SUPPORT_EMAIL:-}
     depends_on:
       db:
         condition: service_healthy

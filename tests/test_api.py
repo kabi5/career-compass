@@ -23,11 +23,25 @@ def test_rejects_malformed_assessment():
 
 def test_recommendation_endpoint():
     client = app.test_client()
-    # The public contract now requires all 24 items, four per dimension.
-    responses = [{'dimension': d, 'answer': a} for d, a in
-                 [('R', 2), ('I', 5), ('A', 3), ('S', 4), ('E', 1), ('C', 2)] for _ in range(4)]
+    responses = [{'dimension': d, 'answer': a, 'question_id': index * 4 + n + 1}
+                 for index, (d, a) in enumerate(
+                     [('R', 2), ('I', 5), ('A', 3), ('S', 4), ('E', 1), ('C', 2)])
+                 for n in range(4)]
     headers = {'X-Internal-Token': __import__('os').environ.get('INTERNAL_API_TOKEN', '')}
     r = client.post('/recommend', json={'responses': responses, 'top_n': 3}, headers=headers)
     assert r.status_code == 200
     assert len(r.json['recommendations']) == 3
     assert r.json['top_code'] == 'ISA'
+    assert r.json['score_version'] == 'ls-v1.1'
+    assert all('components' in match for match in r.json['recommendations'])
+    assert all(match['score_status'] in ('exploratory', 'provisional', 'complete') for match in r.json['recommendations'])
+    assert all(match['components']['local_opportunity'] is None for match in r.json['recommendations'])
+    assert all(0 <= match['data_coverage'] <= 1 for match in r.json['recommendations'])
+
+
+def test_public_reference_directory_is_labelled():
+    client=app.test_client()
+    headers={'X-Internal-Token': __import__('os').environ.get('INTERNAL_API_TOKEN', '')}
+    data=client.get('/scholarships',headers=headers)
+    assert data.status_code==200
+    assert all(not item['currently_open'] for item in data.json['scholarships'])
