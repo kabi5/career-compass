@@ -1,0 +1,107 @@
+[
+  {
+    "id": "LP-ARCH-BARCH-2025",
+    "university": "Lerotholi Polytechnic",
+    "programme": "Bachelor of Architecture",
+    "level": "Bachelor's Degree",
+    "duration_years": 5,
+    "route_type": "direct_local",
+    "related_careers": ["Architects, Except Landscape and Naval", "Architectural Designers"],
+    "soc_codes": ["17-1011.00"],
+    "required_subjects": ["Mathematics", "Physical Science", "English"],
+    "entry_requirements": "First-year LGCSE minimum: C Mathematics, C Physical Science and D English. A creative portfolio and interview are also required; meeting grades alone is not admission.",
+    "entry_rules": {
+      "LGCSE": {
+        "required_grades": {"mathematics": "C", "physical science": "C", "english": "D"},
+        "manual_requirements": ["Creative portfolio assessment", "Admission interview"]
+      }
+    },
+    "verified": true,
+    "verification_status": "verified",
+    "accreditation_status": "accredited",
+    "accreditation_decision": "Accredited (C)",
+    "accreditation_expires": "2028-06-30",
+    "source_url": "https://www.lp.ac.ls/schools-and-programmes/sobe/",
+    "accreditation_source_url": "https://www.che.ac.ls/lerotholi/",
+    "verified_at": "2026-11-08",
+    "verification_note": "Programme and first-year rules checked against LP's official programme page; accreditation decision and period checked against CHE. Portfolio and interview are not automatically assessed."
+  },
+  {
+    "id": "LP-MECH-BENGTECH-2025",
+    "university": "Lerotholi Polytechnic",
+    "programme": "Bachelor of Engineering Technology in Mechanical Engineering",
+    "level": "Bachelor's Degree",
+    "duration_years": 5,
+    "route_type": "alternative_local",
+    "related_careers": ["Mechanical Engineers", "Mechanical Engineering Technologists", "Manufacturing Engineers", "Maintenance Engineers"],
+    "soc_codes": [],
+    "required_subjects": ["Mathematics", "Physical Science", "English"],
+    "entry_requirements": "First-year LGCSE minimum: C Mathematics, C Physical Science and D English. Review any further institution-specific conditions before applying.",
+    "funding_note": "The LP page separately lists stricter NMDS sponsorship minima, including C English and D or better in two additional subjects. Passing the programme's first-year entry minimum does not confirm funding eligibility.",
+    "entry_rules": {
+      "LGCSE": {
+        "required_grades": {"mathematics": "C", "physical science": "C", "english": "D"}
+      }
+    },
+    "verified": true,
+    "verification_status": "verified",
+    "accreditation_status": "accredited",
+    "accreditation_decision": "Accredited (B)",
+    "accreditation_expires": "2028-06-30",
+    "source_url": "https://www.lp.ac.ls/schools-and-programmes/set/",
+    "accreditation_source_url": "https://www.che.ac.ls/lerotholi/",
+    "verified_at": "2026-11-08",
+    "verification_note": "Official LP first-year LGCSE entry rules and CHE accreditation period reviewed. A technology degree does not by itself establish professional registration. NMDS sponsorship requirements are separate from programme entry."
+  },
+  {
+    "id": "LP-CIVIL-DIP-2025",
+    "university": "Lerotholi Polytechnic",
+    "programme": "Diploma in Civil Engineering",
+    "level": "Diploma",
+    "duration_years": 3,
+    "route_type": "bridging",
+    "related_careers": ["Civil Engineers", "Transportation Engineers", "Environmental Engineers", "Water Engineers", "Geotechnical Engineers"],
+    "soc_codes": [],
+    "required_subjects": ["Mathematics", "Physical Science", "English"],
+    "entry_requirements": "English D and at least six school subjects are listed. LP's prospectus uses an alternative Mathematics/Physical Science wording, while the live programme page lists both. The precise grade rule needs institution confirmation; do not automatically decide eligibility.",
+    "entry_rules": {},
+    "verified": true,
+    "verification_status": "verified",
+    "accreditation_status": "accredited",
+    "accreditation_decision": "Accredited (B)",
+    "accreditation_expires": "2030-06-30",
+    "source_url": "https://www.lp.ac.ls/schools-and-programmes/sobe/",
+    "additional_source_url": "https://www.lp.ac.ls/wp-content/uploads/2025/02/FINALISED-2025-LP-PROSPECTUS-BOOKLET-7-FEB-3.pdf",
+    "accreditation_source_url": "https://www.che.ac.ls/lerotholi/",
+    "verified_at": "2026-11-08",
+    "verification_note": "Programme and accreditation are verified; conflicting wording in the admission sources prevents automated admission eligibility. The diploma is a foundation/bridging pathway for engineering careers, not a claim of immediate professional engineer qualification."
+  },
+  {
+    "id": "LP-CONSTRUCTION-DIP-2025",
+    "university": "Lerotholi Polytechnic",
+    "programme": "Diploma in Construction Management",
+    "level": "Diploma",
+    "duration_years": 3,
+    "route_type": "alternative_local",
+    "related_careers": ["Construction Managers", "Construction Supervisors", "Building Inspectors", "Construction Estimators"],
+    "soc_codes": [],
+    "required_subjects": ["Mathematics", "Physical Science", "English"],
+    "entry_requirements": "Direct-entry LGCSE: C in Mathematics and Physical Science, D in English, E or better in three other subjects, and six subjects taken. Alternative RPL and trade-certificate routes require manual review.",
+    "entry_rules": {
+      "LGCSE": {
+        "required_grades": {"mathematics": "C", "physical science": "C", "english": "D"},
+        "min_subject_count": 6,
+        "other_subjects": {"count": 3, "minimum_grade": "E"}
+      }
+    },
+    "verified": true,
+    "verification_status": "verified",
+    "accreditation_status": "accredited",
+    "accreditation_decision": "Accredited (B)",
+    "accreditation_expires": "2030-06-30",
+    "source_url": "https://www.lp.ac.ls/schools-and-programmes/sobe/",
+    "accreditation_source_url": "https://www.che.ac.ls/lerotholi/",
+    "verified_at": "2026-11-08",
+    "verification_note": "Direct-entry LGCSE rule reviewed from LP; recognised prior learning and alternative routes are outside the automatic eligibility checker."
+  }
+]

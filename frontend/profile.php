@@ -1,28 +1,127 @@
 <?php
-require_once 'config/layout.php';require_once 'config/guidance.php';require_login();
-$user=current_user();$p=profile_payload((int)$user['id']);$error='';$saved=false;
-if($_SERVER['REQUEST_METHOD']==='POST'){
- verify_csrf($_POST['csrf']??null);
- try{
- $p=['subjects'=>string_list(input_text('subjects')),'aspirations'=>input_text('aspirations'),'skills'=>string_list(input_text('skills',500)),'preferences'=>string_list(input_text('preferences',500)),'guidance_needs'=>string_list(input_text('guidance_needs',500)),'subject_grades'=>parse_grades(input_text('subject_grades',2500)),'grading_system'=>'LGCSE','marks'=>[]];
- foreach(['maths','science','english'] as $key){$raw=input_text($key.'_mark',10);if($raw!==''&&(!is_numeric($raw)||!is_finite((float)$raw)||(float)$raw<0||(float)$raw>100))throw new InvalidArgumentException('Every percentage mark must be between 0 and 100.');$p['marks'][$key]=$raw===''?null:(float)$raw;}
- $p['subjects']=array_values(array_unique(array_merge($p['subjects'],array_keys($p['subject_grades']))));if(count($p['subjects'])>40)throw new InvalidArgumentException('Enter no more than 40 subjects.');
- foreach(['subjects','skills','preferences','guidance_needs'] as $field){if(count($p[$field])>40)throw new InvalidArgumentException('Enter no more than 40 entries for '.$field.'.');foreach($p[$field] as $entry)if(mb_strlen($entry)>100)throw new InvalidArgumentException('Each subject, skill, preference or guidance need must be 100 characters or fewer.');}
- db()->beginTransaction();
- db()->prepare('INSERT INTO learner_profiles(user_id,subjects,maths_mark,science_mark,english_mark,aspirations) VALUES(?,?,?,?,?,?) ON DUPLICATE KEY UPDATE subjects=VALUES(subjects),maths_mark=VALUES(maths_mark),science_mark=VALUES(science_mark),english_mark=VALUES(english_mark),aspirations=VALUES(aspirations)')->execute([$user['id'],implode(', ',$p['subjects']),$p['marks']['maths'],$p['marks']['science'],$p['marks']['english'],$p['aspirations']]);
- db()->prepare('INSERT INTO profile_versions(user_id,payload) VALUES(?,?)')->execute([$user['id'],json_encode($p,JSON_THROW_ON_ERROR)]);db()->commit();$saved=true;
- }catch(InvalidArgumentException $ex){$error=$ex->getMessage();}catch(Throwable $ex){if(db()->inTransaction())db()->rollBack();error_log('Profile save failed: '.$ex->getMessage());$error='Unable to save your profile. Please try again.';}
+require_once 'config/layout.php';
+require_login();
+$user = current_user();
+$saved = false;
+$error = '';
+
+function parse_subject_results(string $text): array {
+    $results = [];
+    $seen = [];
+    $lines = preg_split('/\r\n|\n|\r/', trim($text));
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if ($line === '') continue;
+        if (count($results) >= 40 || mb_strlen($line) > 150) {
+            throw new InvalidArgumentException('Please enter no more than 40 subjects (150 characters per line).');
+        }
+        if (!preg_match('/^([^:]{1,100}):\s*(.+)$/u', $line, $matches)) {
+            throw new InvalidArgumentException('Enter each result on a separate line as Subject: Grade (for example Mathematics: B).');
+        }
+        $subject = trim($matches[1]);
+        $grade = strtoupper(trim($matches[2]));
+        if ($subject === '' || !preg_match('/^(A\*|[A-G]|CREDIT|PASS|FAIL|\d{1,3}(?:\.\d{1,2})?)$/', $grade)) {
+            throw new InvalidArgumentException('Use a valid LGCSE/COSC grade or percentage from 0 to 100.');
+        }
+        if (is_numeric($grade) && (float)$grade > 100) {
+            throw new InvalidArgumentException('Percentage grades cannot exceed 100.');
+        }
+        $key = mb_strtolower(preg_replace('/\s+/', ' ', $subject));
+        if (isset($seen[$key])) throw new InvalidArgumentException('Please list each subject only once.');
+        $seen[$key] = true;
+        $results[] = ['subject' => $subject, 'grade' => $grade];
+    }
+    return $results;
 }
-page_start(t('Your academic profile'),'profile');
+
+$stmt = db()->prepare('SELECT * FROM learner_profiles WHERE user_id=?');
+$stmt->execute([$user['id']]);
+$p = $stmt->fetch() ?: [];
+$previousResults = json_decode($p['subject_results'] ?? '[]', true);
+$resultsText = is_array($previousResults)
+    ? implode("\n", array_map(static fn($r) => ($r['subject'] ?? '') . ': ' . ($r['grade'] ?? ''), $previousResults))
+    : '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verify_csrf($_POST['csrf'] ?? null);
+    $subjects = trim((string)($_POST['subjects'] ?? ''));
+    $aspirations = trim((string)($_POST['aspirations'] ?? ''));
+    $qualification = (string)($_POST['qualification_type'] ?? '');
+    $yearRaw = trim((string)($_POST['qualification_year'] ?? ''));
+    $resultsText = trim((string)($_POST['subject_results_text'] ?? ''));
+    $marks = [];
+    if (!in_array($qualification, ['', 'LGCSE', 'COSC', 'OTHER'], true)) {
+        $error = 'Please choose a valid qualification type.';
+    }
+    $year = null;
+    if ($yearRaw !== '') {
+        if (!ctype_digit($yearRaw) || (int)$yearRaw < 2000 || (int)$yearRaw > 2100) {
+            $error = 'Please provide a valid qualification year.';
+        } else $year = (int)$yearRaw;
+    }
+    foreach (['maths_mark', 'science_mark', 'english_mark'] as $key) {
+        $raw = trim((string)($_POST[$key] ?? ''));
+        if ($raw !== '' && (!is_numeric($raw) || (float)$raw < 0 || (float)$raw > 100)) {
+            $error = 'Every percentage mark must be between 0 and 100.';
+            break;
+        }
+        $marks[$key] = $raw === '' ? null : (float)$raw;
+    }
+    if (mb_strlen($subjects) > 1000 || mb_strlen($aspirations) > 1000 || mb_strlen($resultsText) > 6000) {
+        $error = 'Please shorten your subjects or aspirations.';
+    }
+    if (!$error) {
+        try {
+            $results = parse_subject_results($resultsText);
+            $statement = db()->prepare('INSERT INTO learner_profiles
+                (user_id,subjects,maths_mark,science_mark,english_mark,aspirations,qualification_type,qualification_year,subject_results)
+                VALUES (?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE
+                subjects=VALUES(subjects),maths_mark=VALUES(maths_mark),science_mark=VALUES(science_mark),
+                english_mark=VALUES(english_mark),aspirations=VALUES(aspirations),
+                qualification_type=VALUES(qualification_type),qualification_year=VALUES(qualification_year),
+                subject_results=VALUES(subject_results)');
+            $statement->execute([$user['id'], $subjects, $marks['maths_mark'], $marks['science_mark'],
+                $marks['english_mark'], $aspirations, $qualification ?: null, $year,
+                json_encode($results, JSON_THROW_ON_ERROR)]);
+            $saved = true;
+            $stmt->execute([$user['id']]);
+            $p = $stmt->fetch() ?: [];
+        } catch (InvalidArgumentException $exception) {
+            $error = $exception->getMessage();
+        } catch (Throwable $exception) {
+            error_log('Could not save academic profile: ' . $exception->getMessage());
+            $error = 'Your academic profile could not be saved. Please try again.';
+        }
+    }
+}
+
+page_start('My academic profile', 'profile');
 ?>
-<main id="main" class="wide page-space"><div class="page-intro"><span class="eyebrow muted-eyebrow">BUILD YOUR STORY</span><h1><?= e(t('Your academic profile')) ?></h1><p>Share only what you choose. Missing marks remain unknown. Your guidance needs help you and your counsellor plan support.</p></div>
-<?php if($error):?><div class="alert error" role="alert"><?= e(t('Check form')) ?> <?= e($error) ?></div><?php endif;?>
-<?php if($saved):?><div class="alert success" role="status"><?= e(t('Profile saved')) ?></div><?php endif;?>
-<div class="two-column"><section class="panel"><form method="post" class="form-grid"><?= csrf_field() ?>
-<label><?= e(t('Subjects')) ?><input name="subjects" maxlength="1000" value="<?= e(implode(', ',$p['subjects']??[])) ?>"><small>Separate subjects with commas.</small></label>
-<label>LGCSE subjects and grades<textarea name="subject_grades" rows="7" maxlength="2500" placeholder="Mathematics = B&#10;English = C&#10;Physical Science = B"><?= e(grades_text($p['subject_grades']??[])) ?></textarea><small>One subject = grade per line. Use A*, A–G or U. These grades are used for programme requirements; no automatic conversion from percentages is made.</small></label>
-<fieldset><legend>Optional current class marks (%)</legend><div class="form-row"><?php foreach(['maths'=>'Mathematics','science'=>'Science','english'=>'English'] as $key=>$label):?><label><?= e($label) ?><input type="number" name="<?= $key ?>_mark" min="0" max="100" step="0.1" value="<?= e(isset($p['marks'][$key])?(string)$p['marks'][$key]:'') ?>"></label><?php endforeach;?></div></fieldset>
-<?php foreach(['skills'=>'Skills','preferences'=>'Preferences','guidance_needs'=>'Guidance needs'] as $key=>$label):?><label><?= e(t($label)) ?><input name="<?= $key ?>" maxlength="500" value="<?= e(implode(', ',$p[$key]??[])) ?>"><small><?= $key==='guidance_needs'?'Examples: choosing subjects, funding, applications, workplace experience.':'Separate entries with commas. Describe activities or working environments you enjoy.' ?></small></label><?php endforeach;?>
-<label><?= e(t('Aspirations')) ?><textarea name="aspirations" rows="4" maxlength="1000"><?= e($p['aspirations']??'') ?></textarea></label><button class="btn btn-primary"><?= e(t('Save my profile')) ?></button></form></section>
-<aside class="side-stack"><div class="panel highlight-panel"><h2>Refresh your career ideas</h2><p>Your latest interest assessment can be reused after you update subjects, marks, skills or ambitions. Save changes first.</p><form method="post" action="recalculate.php"><?= csrf_field() ?><button class="btn btn-primary"><?= e(t('Recalculate')) ?></button></form><p><a href="history.php">Review previous assessments and matches ↗</a></p></div><div class="panel"><h2>Try a scenario</h2><p>Explore different grades without changing this profile.</p><a href="simulate.php" class="btn btn-outline">Open what-if simulator</a></div><div class="panel"><h3>Your privacy</h3><p>Do not include identification numbers, health information or home addresses.</p><a href="account.php">Manage sharing and consent ↗</a></div></aside></div></main>
+<main id="main" class="wide page-space">
+  <div class="page-intro"><span class="eyebrow muted-eyebrow">BUILD YOUR STORY</span><h1>Your academic profile</h1><p>Add your school results to explore careers and possible Lesotho study routes.</p></div>
+  <div class="two-column"><section class="panel">
+    <div class="panel-heading"><h2>My subjects & goals</h2></div>
+    <?php if ($error): ?><div class="alert error" role="alert"><?= e($error) ?></div><?php endif; ?>
+    <?php if ($saved): ?><div class="alert success" role="status">Saved. Retake the assessment to update your recommendations.</div><?php endif; ?>
+    <form method="post" class="form-grid"><?= csrf_field() ?>
+      <div class="form-row">
+        <label>Qualification system
+          <select name="qualification_type">
+            <?php foreach ([''=>'Not selected','LGCSE'=>'LGCSE','COSC'=>'COSC','OTHER'=>'Other / not sure'] as $key=>$label): ?>
+              <option value="<?= e($key) ?>" <?= ($qualification ?? ($p['qualification_type'] ?? '')) === $key ? 'selected' : '' ?>><?= e($label) ?></option>
+            <?php endforeach; ?>
+          </select>
+        </label>
+        <label>Qualification year (optional)<input type="number" name="qualification_year" min="2000" max="2100" value="<?= e((string)($yearRaw ?? ($p['qualification_year'] ?? ''))) ?>" placeholder="e.g. 2026"></label>
+      </div>
+      <label>Subjects you are taking<input name="subjects" maxlength="1000" placeholder="Mathematics, English, Physical Science" value="<?= e($subjects ?? ($p['subjects'] ?? '')) ?>"><small>Separate subjects with commas.</small></label>
+      <label>School subject results<textarea name="subject_results_text" rows="7" maxlength="6000" placeholder="Mathematics: B&#10;English: C&#10;Physical Science: B"><?= e($resultsText) ?></textarea><small>One result per line: Subject: Grade. LGCSE: A*, A–G. COSC: Credit / Pass / Fail, or record a numeric percentage where available. Results are used for guidance, not official admission decisions.</small></label>
+      <p class="fine-print">If you only know percentage marks, you may also enter these below. Structured results take priority for the same subject.</p>
+      <div class="form-row"><label>Mathematics (%)<input type="number" name="maths_mark" min="0" max="100" step="0.1" value="<?= e((string)($marks['maths_mark'] ?? ($p['maths_mark'] ?? ''))) ?>"></label><label>Science (%)<input type="number" name="science_mark" min="0" max="100" step="0.1" value="<?= e((string)($marks['science_mark'] ?? ($p['science_mark'] ?? ''))) ?>"></label></div>
+      <label>English (%)<input type="number" name="english_mark" min="0" max="100" step="0.1" value="<?= e((string)($marks['english_mark'] ?? ($p['english_mark'] ?? ''))) ?>"></label>
+      <label>Career ideas or ambitions<textarea name="aspirations" rows="4" maxlength="1000" placeholder="What would you like to learn or do someday?"><?= e($aspirations ?? ($p['aspirations'] ?? '')) ?></textarea></label>
+      <button type="submit" class="btn btn-primary">Save my profile</button>
+    </form>
+  </section><aside class="side-stack"><div class="panel highlight-panel"><h2>Why your results help</h2><p>We compare your interests with career profiles and use your grades to suggest areas of preparation. Admission requirements must be checked with the institution.</p><a class="text-link" href="assessment.php">Go to assessment ↗</a></div><div class="panel"><h3>Your privacy matters</h3><p class="muted">Do not include identity numbers, addresses or private contact details in your aspirations.</p><a class="text-link" href="privacy.php">Read about privacy ↗</a></div></aside></div>
+</main>
 <?php page_end(); ?>

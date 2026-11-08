@@ -1,0 +1,34 @@
+{
+  "country": "LS",
+  "dataset_version": "2026-11-08",
+  "occupation_classification_required": "SOC2018",
+  "occupation_specific_entries": [],
+  "national_context": [
+    {
+      "name": "National unemployment rate",
+      "value": 30.1,
+      "unit": "percent",
+      "reference_year": 2024,
+      "source": "Lesotho Bureau of Statistics, 2024 Labour Force Survey key indicators",
+      "source_url": "https://www.bos.gov.ls/Publications.htm",
+      "report_title": "2024 Labour Force Survey Key Indicators Updated",
+      "archived_report_url": "https://www.bos.gov.ls/New%20Folder/Copy%20of%20Demography/Lesotho_Labour_Force_Survey_2024_Indicators.pdf",
+      "reviewed_at": "2026-11-08",
+      "use_in_career_score": false,
+      "note": "National unemployment is NOT an occupation-specific demand estimate."
+    },
+    {
+      "name": "National employment-to-population ratio",
+      "value": 36.4,
+      "unit": "percent",
+      "reference_year": 2024,
+      "source": "Lesotho Bureau of Statistics, 2024 Labour Force Survey key indicators",
+      "source_url": "https://www.bos.gov.ls/Publications.htm",
+      "report_title": "2024 Labour Force Survey Key Indicators Updated",
+      "archived_report_url": "https://www.bos.gov.ls/New%20Folder/Copy%20of%20Demography/Lesotho_Labour_Force_Survey_2024_Indicators.pdf",
+      "reviewed_at": "2026-11-08",
+      "use_in_career_score": false,
+      "note": "Population-wide employment ratio cannot establish demand for an engineer, teacher or another specific career."
+    }
+  ]
+}

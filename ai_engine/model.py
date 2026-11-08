@@ -1,210 +1,256 @@
-"""Explainable weighted matching, not trained ML or an outcome predictor.
-Occupation profiles are international references. Subject, skills and preference
-links are exploratory heuristics, never admission rules. Missing data is omitted.
+
+"""Lesotho career exploration scoring v1.1: transparent, not a trained predictor.
+
+The displayed percentage is a comparison of usable factors, not admission
+eligibility, an employment probability, or a prediction of career success.
+Only reviewed local programme rules and occupation-specific demand evidence
+may contribute to the relevant scoring factors.
 """
 import json
-import math
 import os
-import re
-from pathlib import Path
-from riasec import DIMENSIONS, DIMENSION_NAMES
-from programmes import programmes_for_career, canon
 
-BASE_DIR = Path(__file__).parent
-METHOD_VERSION = 'weighted-exploration-2.0'
-CAREERS = json.loads((BASE_DIR / 'data/processed/careers.json').read_text(encoding='utf-8'))
-EDUCATION = json.loads((BASE_DIR / 'data/processed/education.json').read_text(encoding='utf-8'))
-DEFAULT_WEIGHTS = {'interest': .60, 'academic': .20, 'subjects': .10,
-                   'aspirations': .05, 'skills': .025, 'preferences': .025}
+import numpy as np
 
+from riasec import DIMENSIONS, DIMENSION_NAMES, top_three_code
+from programmes import grade_to_percent, learner_result_map, programmes_for_career
+from labour_evidence import local_opportunity_evidence
 
-def configured_weights(overrides=None):
-    raw = overrides if overrides is not None else json.loads(os.getenv('RECOMMENDATION_WEIGHTS', '{}'))
-    if not isinstance(raw, dict) or set(raw) - set(DEFAULT_WEIGHTS):
-        raise ValueError('RECOMMENDATION_WEIGHTS contains unrecognised components')
-    weights = {**DEFAULT_WEIGHTS, **raw}
-    if any(type(v) not in (int, float) or not math.isfinite(v) or v < 0 for v in weights.values()):
-        raise ValueError('Weights must be finite non-negative numbers')
-    if sum(weights.values()) <= 0:
-        raise ValueError('At least one recommendation weight must be positive')
-    return weights
+BASE_DIR = os.path.dirname(__file__)
+CAREERS_P = os.path.join(BASE_DIR, "data", "processed", "careers.json")
+EDU_P = os.path.join(BASE_DIR, "data", "processed", "education.json")
+SCORE_VERSION = "ls-v1.1"
+WEIGHTS = {"interest": 40, "academic": 25, "subject_readiness": 15,
+           "pathway": 10, "local_opportunity": 10}
+MIN_DISPLAY_COVERAGE = 0.75
 
 
-WEIGHTS = configured_weights()
-DIMENSION_SUBJECTS = {
-    'R': ['Mathematics', 'Physical Sciences'],
-    'I': ['Mathematics', 'Physical Sciences', 'Biology'],
-    'A': ['English', 'Art'], 'S': ['English', 'Biology'],
-    'E': ['Business Studies', 'Mathematics'], 'C': ['Mathematics', 'Accounting'],
-}
-DIMENSION_SKILLS = {
-    'R': ['practical work', 'repairing', 'building'],
-    'I': ['problem solving', 'research', 'analysis'],
-    'A': ['creativity', 'design', 'writing'],
-    'S': ['communication', 'teaching', 'listening'],
-    'E': ['leadership', 'persuasion', 'planning'],
-    'C': ['organisation', 'accuracy', 'record keeping'],
-}
-DIMENSION_PREFERENCES = {
-    'R': ['outdoors', 'hands on', 'practical'],
-    'I': ['research', 'investigation', 'solving problems'],
-    'A': ['creative work', 'independence', 'creativity'],
-    'S': ['helping people', 'teamwork', 'teaching'],
-    'E': ['leadership', 'business', 'entrepreneurship'],
-    'C': ['structured work', 'organisation', 'data'],
-}
+def _load_json(path, fallback):
+    try:
+        with open(path, "r", encoding="utf-8") as stream:
+            return json.load(stream)
+    except (OSError, ValueError):
+        return fallback
 
 
-def _career_vector(code, scores=None):
+CAREERS = _load_json(CAREERS_P, [])
+EDUCATION = _load_json(EDU_P, {"categories": {}, "by_occupation": {}})
+
+
+def _career_vector(career):
+    scores = career.get("riasec_scores") or {}
     if scores:
-        vector = [max(0, float(scores.get(DIMENSION_NAMES[d], 0))) for d in DIMENSIONS]
-        if sum(vector):
-            return vector
-    return [1.0 if d in (code or '') else 0.0 for d in DIMENSIONS]
+        vector = np.array([float(scores.get(DIMENSION_NAMES[d], 0)) * 100 / 7
+                           for d in DIMENSIONS], dtype=float)
+        return np.clip(vector, 0, 100)
+    vector = np.zeros(len(DIMENSIONS), dtype=float)
+    for letter in career.get("riasec_code", ""):
+        if letter in DIMENSIONS:
+            vector[DIMENSIONS.index(letter)] = 100
+    return vector
 
 
-def _cosine(left, right):
-    norm = math.sqrt(sum(x*x for x in left) * sum(x*x for x in right))
-    return sum(a*b for a, b in zip(left, right)) / norm if norm else None
-
-
-def _subjects(career):
-    return list(dict.fromkeys(s for d in career.get('riasec_code', '')
-                             for s in DIMENSION_SUBJECTS.get(d, [])))
-
-
-def _infer_subjects(career):
-    return ', '.join(_subjects(career))
-
-
-def _academic_details(career, marks):
-    # The legacy percentage field is called science. This alias is deliberately
-    # confined to an exploratory indicator, never to admission-rule matching.
-    normalised = {canon('Physical Sciences' if canon(k) == 'science' else k): v for k, v in (marks or {}).items()}
-    supplied, missing = [], []
-    for subject in _subjects(career):
-        value = normalised.get(canon(subject))
-        if type(value) in (int, float) and math.isfinite(value) and 0 <= value <= 100:
-            supplied.append({'subject': subject, 'percentage': value})
-        else:
-            missing.append(subject)
-    score = sum(v['percentage'] for v in supplied) / len(supplied) if supplied else None
-    return score, supplied, missing
-
-
-def _academic_fit(career, marks, subjects=None):
-    score, _, _ = _academic_details(career, marks)
-    return score / 100 if score is not None else None
-
-
-def _heuristic_alignment(values, code, vocabulary):
-    if not values:
-        return None, []
-    matched = {d for d, terms in vocabulary.items()
-               if any(canon(value) in {canon(t) for t in terms} for value in values)}
-    if not matched:
-        return None, []
-    return 100 * len(matched.intersection(code)) / len(matched), sorted(matched)
-
-
-def _aspiration_alignment(aspirations, title):
-    if not aspirations.strip():
+def _interest_fit(learner, career):
+    u = np.array([float(learner.get(d, 0)) for d in DIMENSIONS], dtype=float)
+    v = _career_vector(career)
+    if np.linalg.norm(u) == 0 or np.linalg.norm(v) == 0:
         return None
-    words = {w.rstrip('s') for w in re.findall(r'[a-z]+', aspirations.lower()) if len(w) > 3}
-    title_words = {w.rstrip('s') for w in re.findall(r'[a-z]+', title.lower()) if len(w) > 3}
-    return 100 * len(words.intersection(title_words)) / max(1, len(title_words))
+    cosine = float(np.dot(u, v) / (np.linalg.norm(u) * np.linalg.norm(v)))
+    closeness = 1.0 - float(np.abs(u - v).sum() / 600.0)
+    return round(max(0, min(100, 100 * (0.70 * cosine + 0.30 * closeness))), 2)
 
 
-def career_match(career, riasec_scores=None, marks=None, subjects=None,
-                 aspirations='', skills=None, preferences=None, subject_grades=None,
-                 programme_catalogue=None):
-    code = career.get('riasec_code', '')
-    learner_vector = [float((riasec_scores or {}).get(d, 0)) for d in DIMENSIONS]
-    similarity = _cosine(learner_vector, _career_vector(code, career.get('riasec_scores')))
-    interest = 100 * similarity if similarity is not None else None
-    academic, used_marks, absent_marks = _academic_details(career, marks)
-    subject_list = list(dict.fromkeys((subjects or []) + list((subject_grades or {}).keys())))
-    learner_subjects = {canon(s) for s in subject_list}
-    suggested = _subjects(career)
-    present = [s for s in suggested if canon(s) in learner_subjects]
-    absent = [s for s in suggested if canon(s) not in learner_subjects]
-    compatibility = 100 * len(present) / len(suggested) if learner_subjects and suggested else None
-    skill_score, skill_dimensions = _heuristic_alignment(skills, code, DIMENSION_SKILLS)
-    preference_score, preference_dimensions = _heuristic_alignment(preferences, code, DIMENSION_PREFERENCES)
-    components = {'interest': interest, 'academic': academic, 'subjects': compatibility,
-                  'aspirations': _aspiration_alignment(aspirations, career['title']),
-                  'skills': skill_score, 'preferences': preference_score}
-    denominator = sum(WEIGHTS[k] for k, v in components.items() if v is not None)
-    effective = {k: round(WEIGHTS[k] / denominator, 6) if denominator and v is not None else 0
-                 for k, v in components.items()}
-    match = (sum(WEIGHTS[k]*v for k, v in components.items() if v is not None) / denominator
-             if denominator else None)
-    education = EDUCATION.get('by_occupation', {}).get(career.get('soc_code', '')) or {}
-    local = programmes_for_career(career['title'], subject_list, catalogue=programme_catalogue)
-    missing = [name for name, score in components.items() if score is None]
-    explanation = []
-    if interest is not None:
-        explanation.append(f'Interest alignment is {interest:.1f}/100 by cosine similarity between your six interest scores and the reference occupation profile.')
-        if len(set(learner_vector)) == 1:
-            explanation.append('Your interest scores are equal, so the assessment does not yet distinguish preferred activities.')
-    else:
-        explanation.append('Interest alignment is unavailable; complete an assessment to add this component.')
-    if academic is not None:
-        explanation.append(f'Academic preparation is {academic:.1f}/100: the mean of {len(used_marks)} supplied percentage mark(s) in suggested subjects.')
-    else:
-        explanation.append('No relevant percentage marks were supplied; the academic component is excluded, not estimated. Letter grades are reserved for admission-rule checks.')
-    explanation.append('Subject, skill and preference links are exploratory RIASEC heuristics; aspiration alignment uses title-keyword overlap.')
-    if missing:
-        explanation.append('Unavailable components (' + ', '.join(missing) + ') are excluded and the remaining weights are renormalised.')
-    explanation.append('This is career exploration, not admission eligibility, a probability of success, a trained ML prediction or a measure of Lesotho job demand.')
-    skills_suggested = list(dict.fromkeys(s for d in code for s in DIMENSION_SKILLS.get(d, [])))
-    activities = [DIMENSION_NAMES[d] + ' activities' for d in code if d in DIMENSION_NAMES]
-    return {
-        'title': career['title'], 'soc_code': career.get('soc_code', ''),
-        'match_score': _rounded(match), 'holland_code': code,
-        'interest_alignment': _rounded(interest), 'academic_preparation': _rounded(academic),
-        'subject_compatibility': _rounded(compatibility), 'aspiration_alignment': _rounded(components['aspirations']),
-        'skills_alignment': _rounded(skill_score), 'preference_alignment': _rounded(preference_score),
-        'component_scores': {k: _rounded(v) for k, v in components.items()},
-        'configured_weights': WEIGHTS, 'effective_weights': effective,
-        'missing_information': missing, 'academic_evidence': used_marks,
-        'academic_missing_subjects': absent_marks, 'subject_matches': present,
-        'suggested_subjects_not_listed': absent,
-        'skills_matched_dimensions': skill_dimensions, 'preferences_matched_dimensions': preference_dimensions,
-        'explanation': ' '.join(explanation), 'recommended_subjects': _infer_subjects(career),
-        'pathway': _pathway_for(education, local),
-        'education_level': education.get('most_common_label', 'Not specified in reference data'),
-        'education_source': 'International occupation reference; not a Lesotho admission requirement',
-        'demand_level': 'unknown',
-        'labour_market_information': 'No verified local labour-market evidence is available in this catalogue.',
-        'description': career.get('description', ''), 'local_programmes': local,
-        'skills': skills_suggested, 'typical_activities': activities,
-        'activity_source': 'Exploration prompts inferred from RIASEC; not occupation-specific task evidence',
-        'method_version': METHOD_VERSION,
+def _subject_weights(career):
+    """Provisional subject relevance. NOT published admission requirements."""
+    title = career.get("title", "").lower()
+    patterns = [
+        (("software", "computer", "database", "cyber", "network", "programmer", "web developer"),
+         {"mathematics": 0.5, "physical science": 0.3, "english": 0.2}),
+        (("engineer", "electrician", "mechanic", "drafter", "architect"),
+         {"mathematics": 0.5, "physical science": 0.4, "english": 0.1}),
+        (("physician", "doctor", "nurs", "biolog", "pharmac", "clinical", "medical"),
+         {"biology": 0.45, "physical science": 0.35, "mathematics": 0.2}),
+        (("account", "audit", "financ", "budget", "econom", "statistic"),
+         {"mathematics": 0.45, "accounting": 0.35, "english": 0.2}),
+        (("teacher", "counsel", "social work", "writer", "journal", "public relation"),
+         {"english": 0.7, "mathematics": 0.3}),
+        (("agricultur", "farm", "veterinar", "animal scient", "crop"),
+         {"biology": 0.5, "mathematics": 0.3, "english": 0.2}),
+    ]
+    for words, subject_weights in patterns:
+        if any(word in title for word in words):
+            return subject_weights
+    code = career.get("riasec_code", "")
+    if "I" in code or "R" in code:
+        return {"mathematics": 0.45, "physical science": 0.35, "english": 0.2}
+    if "S" in code or "A" in code:
+        return {"english": 0.7, "mathematics": 0.3}
+    return {"english": 0.5, "mathematics": 0.5}
+
+
+def _academic_fit(career, results, qualification_type):
+    total, present_weight = 0.0, 0.0
+    for subject, weight in _subject_weights(career).items():
+        result = grade_to_percent(results.get(subject), qualification_type)
+        if result is None:
+            continue
+        total += result * weight
+        present_weight += weight
+    return round(total / present_weight, 2) if present_weight else None
+
+
+def _local_opportunity_score(soc_code):
+    """Backward-compatible helper returning score and source metadata."""
+    finding = local_opportunity_evidence(soc_code)
+    if finding["score"] is None:
+        return None, None
+    record = finding["evidence"][0]
+    return finding["score"], {
+        "source_url": record["source_url"],
+        "verified_at": record["reviewed_at"],
+        "methodology": record["methodology"],
+        "source_occupation_mapping": record["source_occupation_mapping"],
     }
 
 
-def _rounded(value):
-    return round(value, 2) if value is not None else None
+def _score_breakdown(factors):
+    used = {key: value for key, value in factors.items() if value is not None}
+    coverage_points = sum(WEIGHTS[key] for key in used)
+    if not used:
+        return None, 0.0, None, "insufficient_information"
+    ranking_score = round(sum(WEIGHTS[key] * value for key, value in used.items()) /
+                          coverage_points, 2)
+    coverage = round(coverage_points / 100, 2)
+    visible = ranking_score if coverage >= MIN_DISPLAY_COVERAGE else None
+    status = ("complete" if coverage == 1 else "provisional") if visible is not None else "exploratory"
+    return visible, coverage, ranking_score, status
 
 
-def recommend(riasec_scores, marks, subjects, aspirations='', top_n=5,
-              education_filter=None, min_score=.30, skills=None, preferences=None,
-              subject_grades=None, programme_catalogue=None):
-    results = []
+def _infer_subjects(career):
+    mapping = {"mathematics": "Mathematics", "physical science": "Physical Science",
+               "english": "English", "biology": "Biology", "accounting": "Accounting"}
+    return ", ".join(mapping.get(key, key.title()) for key in _subject_weights(career))
+
+
+def _explanation(career, learner, factors, status, programme_list, best, coverage):
+    strongest = max(DIMENSIONS, key=lambda key: learner.get(key, 0))
+    parts = [
+        f"Your strongest questionnaire interest is {DIMENSION_NAMES[strongest]}.",
+        f"This is an exploratory comparison with the reference interest profile for {career['title']}.",
+    ]
+    if factors["academic"] is None:
+        parts.append("Relevant marks or interpretable grades are missing, so academic preparation was not scored.")
+    else:
+        parts.append("Academic preparation uses available results and indicative subject relevance; it is not an admission check.")
+
+    verified = [item for item in programme_list if item["verified"]]
+    if not verified:
+        parts.append("No currently verified, matching Lesotho study pathway was found in this limited catalogue.")
+    elif best:
+        parts.append(f"A reviewed local study route is {best['programme']} at {best['university']}.")
+        if best.get("route_type") != "direct_local":
+            parts.append("It is an alternative or bridging route and may not directly qualify someone for the named occupation.")
+
+    if best and factors["subject_readiness"] is None:
+        parts.append("Programme-specific eligibility cannot yet be calculated: results, qualification rules or clarified entry conditions are missing.")
+    elif best and best["eligibility_status"] == "additional_review_required":
+        parts.append("Submitted grades appear to satisfy the documented minimum, but additional checks such as a portfolio or interview remain.")
+    elif best and best["eligibility_status"] == "does_not_currently_meet":
+        parts.append("The submitted grades do not currently meet all documented entry minima for this route.")
+    elif best and best["eligibility_status"] == "meets_published_minimum":
+        parts.append("The supplied grades satisfy the checked published minima; this does not guarantee admission.")
+
+    if programme_list and not verified:
+        parts.append("Other listed programme suggestions are unverified; confirm them directly with the institutions.")
+    if factors["local_opportunity"] is None:
+        parts.append("Comparable Lesotho occupation-specific demand evidence is unavailable; national unemployment is not used as a career demand score.")
+    if status == "exploratory":
+        parts.append(f"Only {int(coverage * 100)}% of scoring-factor weight has usable evidence; no overall percentage is shown.")
+    else:
+        parts.append(f"This {status} alignment uses {int(coverage * 100)}% of scoring-factor weight, not a probability of career success.")
+    parts.append("A match score does not guarantee admission, employment or career success.")
+    return " ".join(parts)
+
+
+def recommend(riasec_scores, marks=None, subjects=None, aspirations="", top_n=5,
+              education_filter=None, min_score=0.30, qualification_type="",
+              subject_results=None):
+    """Return higher-coverage matches first while preserving evidence gaps."""
+    del aspirations  # Do not introduce uncontrolled keyword bonuses.
+    results = learner_result_map(subject_results, marks)
+    subjects = list(subjects) if subjects else []
+    learner_code = top_three_code(riasec_scores)
+    if not learner_code:
+        return []
+    output = []
     for career in CAREERS:
-        education = EDUCATION.get('by_occupation', {}).get(career.get('soc_code'))
-        if education_filter and (not education or education.get('most_common_category') not in education_filter):
+        soc = career.get("soc_code", "")
+        education = EDUCATION.get("by_occupation", {}).get(soc) or {}
+        if education_filter and education and education.get("most_common_category") not in education_filter:
             continue
-        result = career_match(career, riasec_scores, marks, subjects, aspirations,
-                              skills, preferences, subject_grades, programme_catalogue)
-        if result['match_score'] is not None and result['match_score'] >= min_score*100:
-            results.append(result)
-    results.sort(key=lambda r: (-r['match_score'], r['title']))
-    return results[:top_n]
+        interest = _interest_fit(riasec_scores, career)
+        if interest is None:
+            continue
+        academic = _academic_fit(career, results, qualification_type)
+        local_progs = programmes_for_career(
+            career["title"], subjects, soc_code=soc,
+            qualification_type=qualification_type, subject_results=results)
+        verified_progs = [p for p in local_progs if p["verified"]]
+
+        # Readiness, pathway and eligibility refer to the SAME reviewed route.
+        # A route with known passing grades is preferred; an incomplete or
+        # unverified rule never becomes an assumed pass.
+        best = max(verified_progs, key=lambda p: (
+            p.get("academic_minimum_met") is True,
+            p["eligibility_status"] == "meets_published_minimum",
+            p["readiness_score"] is not None,
+            p["readiness_score"] if p["readiness_score"] is not None else -1,
+            p["pathway_score"] if p["pathway_score"] is not None else -1,
+        )) if verified_progs else None
+        readiness = best["readiness_score"] if best else None
+        pathway = best["pathway_score"] if best else None
+
+        labour = local_opportunity_evidence(soc)
+        demand = labour["score"]
+        components = {
+            "interest": interest, "academic": academic,
+            "subject_readiness": readiness, "pathway": pathway,
+            "local_opportunity": demand,
+        }
+        match, coverage, rank_score, score_status = _score_breakdown(components)
+        if rank_score is None or rank_score < min_score * 100:
+            continue
+
+        eligibility = best["eligibility_status"] if best else "insufficient_information"
+        pathway_text = (
+            "; ".join(f"{p['programme']} ({p['university']}; verify details)"
+                      for p in local_progs[:3])
+            if local_progs else
+            "Investigate local, vocational and distance-learning routes"
+        )
+        output.append({
+            "title": career["title"], "soc_code": soc, "match_score": match,
+            "ranking_score": rank_score, "data_coverage": coverage,
+            "score_status": score_status, "score_version": SCORE_VERSION,
+            "components": components,
+            "missing_factors": [name for name, val in components.items() if val is None],
+            "holland_code": career.get("riasec_code", ""),
+            "explanation": _explanation(career, riasec_scores, components,
+                                        score_status, local_progs, best, coverage),
+            "recommended_subjects": _infer_subjects(career),
+            "pathway": pathway_text,
+            "education_level": education.get("most_common_label", "Not specified"),
+            "eligibility_status": eligibility,
+            "demand_level": labour["demand_level"] if demand is not None else "unknown",
+            "description": career.get("description", ""),
+            "local_programmes": local_progs,
+            "evidence": [
+                {"source_url": row["source_url"], "verified_at": row["reviewed_at"],
+                 "methodology": row["methodology"], "occupation_classification": "SOC2018"}
+                for row in labour["evidence"]
+            ],
+        })
+    output.sort(key=lambda item: (item["data_coverage"], item["ranking_score"]), reverse=True)
+    return output[:top_n]
 
 
-def _pathway_for(education, local_programmes):
-    if local_programmes:
-        return '; '.join(f"{p['programme']} ({p['university']}; {p.get('verification_status', 'unverified')})" for p in local_programmes[:3])
-    return education.get('most_common_label', 'Discuss relevant qualifications with a counsellor')
+

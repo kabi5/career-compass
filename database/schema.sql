@@ -18,6 +18,9 @@ CREATE TABLE IF NOT EXISTS learner_profiles (
  user_id INT UNSIGNED NOT NULL PRIMARY KEY,
  subjects TEXT, maths_mark DECIMAL(5,2), science_mark DECIMAL(5,2),
  english_mark DECIMAL(5,2), other_marks TEXT, aspirations TEXT,
+ qualification_type VARCHAR(10) DEFAULT NULL,
+ qualification_year SMALLINT UNSIGNED DEFAULT NULL,
+ subject_results LONGTEXT DEFAULT NULL,
  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -34,13 +37,20 @@ CREATE TABLE IF NOT EXISTS assessments (
 CREATE TABLE IF NOT EXISTS recommendations (
  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
  user_id INT UNSIGNED NOT NULL,
- career_title VARCHAR(200) NOT NULL,
- match_score DECIMAL(5,2) NOT NULL,
+ career_title VARCHAR(150) NOT NULL,
+ -- NULL means the evidence is insufficient for a defensible overall percentage.
+ match_score DECIMAL(5,2) DEFAULT NULL,
+ ranking_score DECIMAL(5,2) DEFAULT NULL,
+ data_coverage DECIMAL(5,2) NOT NULL DEFAULT 0.00,
+ score_status VARCHAR(30) NOT NULL DEFAULT 'legacy',
+ score_version VARCHAR(40) NOT NULL DEFAULT 'legacy',
+ score_details LONGTEXT DEFAULT NULL,
+ eligibility_status VARCHAR(40) NOT NULL DEFAULT 'insufficient_information',
  explanation TEXT,
  recommended_subjects TEXT,
  pathway TEXT,
  holland_code VARCHAR(10) DEFAULT NULL,
- education_level TEXT DEFAULT NULL,
+ education_level VARCHAR(150) DEFAULT NULL,
  local_programmes LONGTEXT DEFAULT NULL,
  generated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
  INDEX idx_recommendation_user_score (user_id,match_score),
